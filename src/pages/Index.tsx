@@ -50,6 +50,12 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <nav className="flex flex-wrap justify-center gap-6 text-sm">
             <Link 
+              to="/contact" 
+              className="text-foreground/70 hover:text-foreground transition-opacity"
+            >
+              Contact
+            </Link>
+            <Link 
               to="/mentions-legales" 
               className="text-foreground/70 hover:text-foreground transition-opacity"
             >
