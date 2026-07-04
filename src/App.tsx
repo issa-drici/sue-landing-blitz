@@ -10,6 +10,8 @@ import Confidentialite from "./pages/Confidentialite";
 import Conditions from "./pages/Conditions";
 import Contact from "./pages/Contact";
 import PasswordReset from "./pages/PasswordReset";
+import Screenshots from "./pages/Screenshots";
+import Join from "./pages/Join";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/confidentialite" element={<Confidentialite />} />
           <Route path="/conditions" element={<Conditions />} />
           <Route path="/password-reset/:token" element={<PasswordReset />} />
+          <Route path="/screenshots" element={<Screenshots />} />
+          <Route path="/join/:token" element={<Join />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

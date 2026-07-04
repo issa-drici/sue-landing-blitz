@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["58235M8245.com.alliancetech.com"],
+        "components": [
+          {
+            "/": "/join/*",
+            "comment": "Ouvre une session partagee dans l'app SUE"
+          }
+        ]
+      }
+    ]
+  }
+}
