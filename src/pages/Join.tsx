@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
     Loader2,
     AlertCircle,
@@ -42,6 +42,11 @@ interface SessionPreview {
     organizer: {
         fullName: string;
         avatarUrl: string | null;
+    };
+    // Personne qui a partagé le lien (présent seulement si ?from valide et participant)
+    inviter?: {
+        fullName: string;
+        avatarUrl?: string | null;
     };
     participants?: Participant[];
 }
@@ -137,6 +142,8 @@ function formatSessionTimeRange(start?: string, end?: string) {
 
 const Join = () => {
     const { token } = useParams<{ token: string }>();
+    const [searchParams] = useSearchParams();
+    const from = searchParams.get("from"); // qui a partagé le lien (facultatif)
 
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
@@ -153,9 +160,10 @@ const Join = () => {
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/join/${token}`, {
-                    headers: { Accept: "application/json" },
-                });
+                const response = await fetch(
+                    `${API_BASE_URL}/api/join/${token}${from ? `?from=${encodeURIComponent(from)}` : ""}`,
+                    { headers: { Accept: "application/json" } }
+                );
                 const data = await response.json();
 
                 if (cancelled) return;
@@ -177,7 +185,7 @@ const Join = () => {
         return () => {
             cancelled = true;
         };
-    }, [token]);
+    }, [token, from]);
 
     const handleDownload = () => {
         const userAgent =
@@ -216,7 +224,7 @@ const Join = () => {
         };
         document.addEventListener("visibilitychange", onVisibilityChange);
 
-        window.location.href = `sue://join/${token}`;
+        window.location.href = `sue://join/${token}${from ? `?from=${encodeURIComponent(from)}` : ""}`;
     };
 
     const getInitials = (name: string): string => {
@@ -260,7 +268,12 @@ const Join = () => {
     }
 
     const organizerFirstName = session.organizer.fullName.split(' ')[0] || "L'organisateur";
-    
+
+    // En-tête = la personne qui a partagé le lien (?from) si dispo, sinon l'organisateur.
+    const inviterFullName = session.inviter?.fullName || session.organizer.fullName;
+    const inviterAvatarUrl = session.inviter?.avatarUrl ?? session.organizer.avatarUrl;
+    const inviterFirstName = inviterFullName.split(' ')[0] || "Quelqu'un";
+
     // Détection du rôle en français
     const isFemale = organizerFirstName.toLowerCase().endsWith('a') || organizerFirstName.toLowerCase().endsWith('e');
     const organizerRole = isFemale ? 'Organisatrice' : 'Organisateur';
@@ -334,11 +347,11 @@ const Join = () => {
                                 <div className="w-3 h-0.5 bg-[#D4FC79] rounded-full rotate-[25deg] transform origin-right"></div>
                             </div>
                             
-                            {/* Avatar Organisateur (Résout le problème de l'avatar bizarre/trop petit) */}
+                            {/* Avatar de la personne qui invite (partageur, ou organisateur en repli) */}
                             <div className="relative w-[76px] h-[76px] rounded-full border-[3px] border-[#D4FC79] p-0.5 overflow-hidden bg-white shadow-sm flex items-center justify-center flex-shrink-0">
                                 {renderParticipantAvatar(
-                                    session.organizer.avatarUrl, 
-                                    session.organizer.fullName, 
+                                    inviterAvatarUrl,
+                                    inviterFullName,
                                     "w-full h-full text-2xl font-black"
                                 )}
                             </div>
@@ -353,7 +366,7 @@ const Join = () => {
 
                         {/* Title text */}
                         <h2 className="text-2xl font-black tracking-tight text-neutral-900 text-center leading-[1.1] mt-3">
-                            <span className="text-[#BCEE21]">{organizerFirstName}</span> t'invite
+                            <span className="text-[#BCEE21]">{inviterFirstName}</span> t'invite
                             <br />
                             à rejoindre cette session
                         </h2>
