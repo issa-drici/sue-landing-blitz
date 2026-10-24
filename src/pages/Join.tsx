@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getSportIconUrl, getSportSurfaceUrl } from "@/lib/sportAssets";
+import { WebAnswerDrawer, getStoredToken } from "@/components/join/WebAnswerDrawer";
 import {
     Loader2,
     AlertCircle,
@@ -21,8 +22,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://api.sue.allia
 
 // Lien App Store (identique au bouton de téléchargement de la home, cf. Index.tsx)
 const APP_STORE_URL = "https://apps.apple.com/fr/app/sue/id6749824461";
-const PLAY_STORE_URL =
-    "https://play.google.com/store/apps/details?id=com.alliancetech.com";
+
+// L'app n'existe que sur iPhone : ailleurs (Android, ordinateur) on répond directement sur le site
+const IS_IOS = typeof navigator !== "undefined"
+    && /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as unknown as { MSStream?: unknown }).MSStream;
 
 interface Participant {
     fullName: string;
@@ -40,7 +43,7 @@ interface SessionPreview {
     location: string;
     // "Trouver un créneau" : date pas encore fixée, l'organisateur propose des créneaux
     scheduling?: "scheduled" | "finding_slot";
-    slotProposals?: { date: string; startTime: string; endTime: string }[];
+    slotProposals?: { id: string; date: string; startTime: string; endTime: string }[];
     maxParticipants: number | null;
     participantsCount: number;
     organizer: {
@@ -53,6 +56,9 @@ interface SessionPreview {
         avatarUrl?: string | null;
     };
     participants?: Participant[];
+    // Présents si la personne est connectée sur le site (réponse sans l'app)
+    viewerStatus?: "organizer" | "accepted" | "pending" | "declined" | null;
+    viewerSlotIds?: string[];
 }
 
 // Mapping des sports vers leurs emojis correspondants (identique à l'app mobile)
@@ -115,6 +121,9 @@ const Join = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [session, setSession] = useState<SessionPreview | null>(null);
+    const [isAnswerOpen, setIsAnswerOpen] = useState(false);
+    const [answerSlotId, setAnswerSlotId] = useState<string | null>(null);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         let cancelled = false;
@@ -129,7 +138,13 @@ const Join = () => {
             try {
                 const response = await fetch(
                     `${API_BASE_URL}/api/join/${token}${from ? `?from=${encodeURIComponent(from)}` : ""}`,
-                    { headers: { Accept: "application/json" } }
+                    {
+                        headers: {
+                            Accept: "application/json",
+                            // Connecté sur le site : l'aperçu indique la réponse déjà donnée
+                            ...(getStoredToken() ? { Authorization: `Bearer ${getStoredToken()}` } : {}),
+                        },
+                    }
                 );
                 const data = await response.json();
 
@@ -152,16 +167,13 @@ const Join = () => {
         return () => {
             cancelled = true;
         };
-    }, [token, from]);
+    }, [token, from, refreshKey]);
 
     const handleDownload = () => {
         const userAgent =
             navigator.userAgent || navigator.vendor || (window as any).opera;
-        if (/android/i.test(userAgent)) {
-            window.open(PLAY_STORE_URL, "_blank");
-        } else {
-            window.open(APP_STORE_URL, "_blank");
-        }
+        void userAgent;
+        window.open(APP_STORE_URL, "_blank");
     };
 
     const handleOpenApp = () => {
@@ -171,7 +183,9 @@ const Join = () => {
             /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
 
         if (!isIOS) {
-            handleDownload();
+            // Pas d'app hors iPhone : réponse directement sur le site
+            setAnswerSlotId(null);
+            setIsAnswerOpen(true);
             return;
         }
 
@@ -223,12 +237,14 @@ const Join = () => {
                         Ce lien de session n'est plus valide. Il a peut-être expiré ou la
                         session n'existe plus.
                     </p>
-                    <button
-                        onClick={handleDownload}
-                        className="w-full bg-[#D4FC79] hover:bg-[#c9f662] text-black font-black italic uppercase tracking-wider py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98]"
-                    >
-                        Télécharger l'app
-                    </button>
+                    {IS_IOS && (
+                        <button
+                            onClick={handleDownload}
+                            className="w-full bg-[#D4FC79] hover:bg-[#c9f662] text-black font-black italic uppercase tracking-wider py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98]"
+                        >
+                            Télécharger l'app
+                        </button>
+                    )}
                 </div>
             </div>
         );
@@ -241,9 +257,8 @@ const Join = () => {
     const inviterAvatarUrl = session.inviter?.avatarUrl ?? session.organizer.avatarUrl;
     const inviterFirstName = inviterFullName.split(' ')[0] || "Quelqu'un";
 
-    // Détection du rôle en français
-    const isFemale = organizerFirstName.toLowerCase().endsWith('a') || organizerFirstName.toLowerCase().endsWith('e');
-    const organizerRole = isFemale ? 'Organisatrice' : 'Organisateur';
+    // Libellé neutre : le genre ne se devine pas à partir du prénom
+    const organizerRole = 'Orga';
 
 
     // Autres joueurs (hors organisateur) : confirmés d'abord, puis invités en attente de réponse
@@ -257,6 +272,15 @@ const Join = () => {
 
     const isFindingSlot = session.scheduling === "finding_slot";
     const iconUrl = getSportIconUrl(session.sport);
+    const viewerStatus = session.viewerStatus ?? null;
+    const hasAnswered = viewerStatus === "accepted" || viewerStatus === "declined"
+        || (isFindingSlot && viewerStatus === "pending" && (session.viewerSlotIds?.length ?? 0) > 0);
+    const answeredLabel = viewerStatus === "accepted" ? "✓ Tu participes à cette session"
+        : viewerStatus === "declined" ? "Tu as indiqué que tu ne pouvais pas venir"
+        : `✓ Tes dispos sont envoyées (${session.viewerSlotIds?.length ?? 0} créneau${(session.viewerSlotIds?.length ?? 0) > 1 ? "x" : ""})`;
+    const ctaLabel = IS_IOS
+        ? (isFindingSlot ? "Je donne mes dispos" : "Je rejoins la session")
+        : hasAnswered ? "Modifier ma réponse" : (isFindingSlot ? "Je donne mes dispos" : "Je réponds");
     const surfaceUrl = getSportSurfaceUrl(session.sport);
     const slotCount = session.slotProposals?.length ?? 0;
 
@@ -411,7 +435,11 @@ const Join = () => {
                                                 </div>
                                             </div>
                                             <button
-                                                onClick={handleOpenApp}
+                                                onClick={() => {
+                                                    if (IS_IOS) { handleOpenApp(); return; }
+                                                    setAnswerSlotId(slot.id);
+                                                    setIsAnswerOpen(true);
+                                                }}
                                                 className="flex-shrink-0 bg-[#D4FC79] hover:bg-[#c9f662] text-black font-extrabold text-[12px] px-3 py-2 rounded-xl transition-all active:scale-[0.97]"
                                             >
                                                 Je suis dispo
@@ -493,8 +521,8 @@ const Join = () => {
                         </div>
                         <p className="text-[12px] text-slate-800 font-bold leading-snug">
                             {isFindingSlot
-                                ? "Donne tes dispos, on te prévient dès que le créneau est choisi."
-                                : "Confirme ta présence et reste informé des changements de la session."}
+                                ? (IS_IOS ? "Donne tes dispos, on te prévient dès que le créneau est choisi." : "Donne tes dispos : l'organisateur choisira le créneau qui arrange le plus de monde.")
+                                : (IS_IOS ? "Confirme ta présence et reste informé des changements de la session." : "Réponds en 30 secondes, sans rien installer.")}
                         </p>
                     </div>
 
@@ -525,13 +553,20 @@ const Join = () => {
                         </div>
                     </div>
 
+                    {/* Réponse déjà donnée sur le site */}
+                    {!IS_IOS && hasAnswered && (
+                        <div className="w-full rounded-2xl bg-[#F7FBEF] border border-[#D4FC79] px-4 py-3 text-sm font-bold text-slate-900 text-center">
+                            {answeredLabel}
+                        </div>
+                    )}
+
                     {/* Join button */}
                     <div className="mt-4 w-full">
                         <button
                             onClick={handleOpenApp}
                             className="w-full bg-[#D4FC79] hover:bg-[#c9f662] text-black font-black italic uppercase tracking-wider py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] text-[14px]"
                         >
-                            <span>{session.scheduling === "finding_slot" ? "Je donne mes dispos" : "Je rejoins la session"}</span>
+                            <span>{ctaLabel}</span>
                             <ArrowRight className="w-4 h-4" strokeWidth={3} />
                         </button>
                     </div>
@@ -540,12 +575,33 @@ const Join = () => {
                     <div className="flex items-start justify-center gap-2 text-[10px] text-zinc-400 text-center max-w-[280px] mx-auto pb-1 mt-1">
                         <Lock className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-zinc-400" strokeWidth={2.2} />
                         <span className="leading-normal">
-                            Si l'application n'est pas installée, vous serez automatiquement redirigé vers l'App Store.
+                            {IS_IOS
+                                ? "Si l'application n'est pas installée, vous serez automatiquement redirigé vers l'App Store."
+                                : "Ton numéro sert uniquement à vérifier que c'est bien toi."}
                         </span>
                     </div>
 
                 </div>
             </div>
+
+            {!IS_IOS && token && (
+                <WebAnswerDrawer
+                    open={isAnswerOpen}
+                    onOpenChange={setIsAnswerOpen}
+                    apiBaseUrl={API_BASE_URL}
+                    shareToken={token}
+                    from={from}
+                    isFindingSlot={isFindingSlot}
+                    slots={session.slotProposals ?? []}
+                    initialSlotId={answerSlotId}
+                    viewerSlotIds={session.viewerSlotIds}
+                    formatSlot={(slot) => {
+                        const { day, month, weekday } = splitSlotDate(slot.date);
+                        return `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)} ${day} ${month} · ${formatSlotHour(slot.startTime)} → ${formatSlotHour(slot.endTime)}`;
+                    }}
+                    onAnswered={() => setRefreshKey((key) => key + 1)}
+                />
+            )}
         </div>
     );
 };
