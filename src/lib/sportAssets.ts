@@ -20,7 +20,7 @@ export const getSportIconUrl = (sport?: string | null): string | null => {
 
 // Terrain où se pratique chaque sport
 const SPORT_SURFACES: Record<string, string> = {
-    football: "grass", rugby: "grass", golf: "grass",
+    football: "grass", rugby: "rugby-pitch", golf: "golf-green",
     tennis: "clay",
     basketball: "parquet-basket",
     handball: "parquet-multisport", volleyball: "parquet-multisport", badminton: "parquet-multisport", squash: "parquet-multisport",
