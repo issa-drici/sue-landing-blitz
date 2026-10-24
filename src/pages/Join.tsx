@@ -37,6 +37,9 @@ interface SessionPreview {
     startTime: string; // H:i
     endTime: string; // H:i
     location: string;
+    // "Trouver un créneau" : date pas encore fixée, l'organisateur propose des créneaux
+    scheduling?: "scheduled" | "finding_slot";
+    slotProposals?: { date: string; startTime: string; endTime: string }[];
     maxParticipants: number | null;
     participantsCount: number;
     organizer: {
@@ -380,25 +383,46 @@ const Join = () => {
 
                     {/* Event details list */}
                     <div className="flex flex-col w-full border-t border-[#EFEFEF] mt-1">
-                        {/* Date */}
-                        <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
-                            <div className="text-[#8CBF3D] flex-shrink-0">
-                                <Calendar className="w-5 h-5" strokeWidth={2.2} />
+                        {session.scheduling === "finding_slot" ? (
+                            <div className="flex items-start gap-3.5 py-2.5 border-b border-[#EFEFEF]">
+                                <div className="text-[#8CBF3D] flex-shrink-0">
+                                    <Calendar className="w-5 h-5" strokeWidth={2.2} />
+                                </div>
+                                <div className="flex flex-col gap-1 min-w-0">
+                                    <div className="text-slate-800 font-semibold text-sm">Date à définir</div>
+                                    {(session.slotProposals || []).map((slot) => (
+                                        <div key={`${slot.date}-${slot.startTime}`} className="text-slate-500 text-sm">
+                                            {formatFrenchDate(slot.date)} · {formatSessionTimeRange(slot.startTime, slot.endTime)}
+                                        </div>
+                                    ))}
+                                    <div className="text-slate-400 text-xs mt-0.5">
+                                        Indique tes disponibilités dans l'app
+                                    </div>
+                                </div>
                             </div>
-                            <div className="text-slate-800 font-semibold text-sm">
-                                {formatFrenchDate(session.date)}
+                        ) : (
+                            <>
+                            {/* Date */}
+                            <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
+                                <div className="text-[#8CBF3D] flex-shrink-0">
+                                    <Calendar className="w-5 h-5" strokeWidth={2.2} />
+                                </div>
+                                <div className="text-slate-800 font-semibold text-sm">
+                                    {formatFrenchDate(session.date)}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Time */}
-                        <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
-                            <div className="text-[#8CBF3D] flex-shrink-0">
-                                <Clock className="w-5 h-5" strokeWidth={2.2} />
+                            {/* Time */}
+                            <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
+                                <div className="text-[#8CBF3D] flex-shrink-0">
+                                    <Clock className="w-5 h-5" strokeWidth={2.2} />
+                                </div>
+                                <div className="text-slate-800 font-semibold text-sm">
+                                    {formatSessionTimeRange(session.startTime, session.endTime)}
+                                </div>
                             </div>
-                            <div className="text-slate-800 font-semibold text-sm">
-                                {formatSessionTimeRange(session.startTime, session.endTime)}
-                            </div>
-                        </div>
+                            </>
+                        )}
 
                         {/* Location */}
                         <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
