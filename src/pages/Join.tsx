@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
+import { getSportIconUrl, getSportSurfaceUrl } from "@/lib/sportAssets";
 import {
     Loader2,
     AlertCircle,
     Calendar,
-    Clock,
     MapPin,
     User,
     Gift,
@@ -56,61 +56,7 @@ interface SessionPreview {
 }
 
 // Mapping des sports vers leurs emojis correspondants (identique à l'app mobile)
-const SPORT_EMOJIS: Record<string, string> = {
-    tennis: '🎾',
-    golf: '⛳',
-    musculation: '💪',
-    football: '⚽',
-    basketball: '🏀',
-    volleyball: '🏐',
-    badminton: '🏸',
-    padel: '🎾',
-    squash: '🏓',
-    natation: '🏊',
-    course: '🏃',
-    cyclisme: '🚴',
-    escalade: '🧗',
-    yoga: '🧘',
-    pilates: '🤸',
-    boxe: '🥊',
-    'jiu-jitsu-brésilien': '🥋',
-    danse: '💃',
-    handball: '🤾',
-    rugby: '🏉',
-    hockey: '🏒',
-    baseball: '⚾',
-    'ping-pong': '🏓',
-    bowling: '🎳',
-    pétanque: '🥎',
-    randonnée: '🥾',
-    ski: '⛷️',
-    snowboard: '🏂',
-    surf: '🏄',
-    'planche-à-voile': '🏄‍♂️',
-    kayak: '🛶',
-    aviron: '🚣',
-    équitation: '🐎',
-    gymnastique: '🤸',
-    athlétisme: '🏃‍♂️',
-    triathlon: '🏊‍♂️',
-    pêche: '🎣',
-    aïkido: '🥋',
-    judo: '🥋',
-    karaté: '🥋',
-    'tir-à-l-arc': '🏹',
-    skateboard: '🛹',
-    'stand-up-paddle': '🏄‍♂️',
-    bodyboard: '🏄',
-    'marche-nordique': '🥾',
-    'marche-sportive': '🚶‍♂️',
-    aquafitness: '🏊‍♀️',
-    'sauvetage-sportif': '🛟',
-};
 
-function getSportEmoji(sport: string): string {
-    const normalized = (sport || '').toLowerCase().trim();
-    return SPORT_EMOJIS[normalized] || '🏃';
-}
 
 // Formate "2026-07-12" en "Lundi 12 Juillet 2026"
 function formatFrenchDate(isoDate: string): string {
@@ -310,6 +256,8 @@ const Join = () => {
     const extraCount = Math.max(0, otherPlayers.length - otherShown.length);
 
     const isFindingSlot = session.scheduling === "finding_slot";
+    const iconUrl = getSportIconUrl(session.sport);
+    const surfaceUrl = getSportSurfaceUrl(session.sport);
     const slotCount = session.slotProposals?.length ?? 0;
 
     // Rendu d'avatar intelligent (photo de profil ou initiales)
@@ -372,7 +320,7 @@ const Join = () => {
                             {/* Avatar de la personne qui invite (partageur, ou organisateur en repli) */}
                             <div className="relative w-[76px] h-[76px] rounded-full border-[3px] border-[#D4FC79] p-0.5 overflow-hidden bg-white shadow-sm flex items-center justify-center flex-shrink-0">
                                 {renderParticipantAvatar(
-                                    inviterAvatarUrl,
+                                    inviterAvatarUrl || "/brand/avatar-default.webp",
                                     inviterFullName,
                                     "w-full h-full text-2xl font-black"
                                 )}
@@ -393,58 +341,37 @@ const Join = () => {
                             à rejoindre cette session
                         </h2>
 
-                        {/* Sport name */}
-                        <div className="text-xl font-black italic uppercase text-slate-900 tracking-tight flex items-center justify-center gap-1.5 mt-2 select-none">
-                            <span>{getSportEmoji(session.sport)}</span>
-                            <span>{session.sportName}</span>
+                    </div>
+
+                    {/* Carte du sport : terrain en fond (comme dans l'app), icône 3D, infos en blanc */}
+                    <div className="relative w-full rounded-3xl overflow-hidden min-h-[150px] p-5 flex flex-col justify-end shadow-[0_8px_30px_rgba(0,0,0,0.12)] bg-zinc-800">
+                        {surfaceUrl && (
+                            <img src={surfaceUrl} alt="" className="absolute inset-0 w-full h-full object-cover object-right" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 via-70% to-black/50" />
+                        {iconUrl && (
+                            <div className="absolute top-3 right-3 w-[76px] h-[76px] flex items-center justify-center">
+                                <img src="/brand/icon-glow.webp" alt="" className="absolute w-[140px] h-[140px] max-w-none" />
+                                <img src={iconUrl} alt="" className="relative w-[76px] h-[76px] object-contain" />
+                            </div>
+                        )}
+                        <div className="relative pr-20 space-y-1.5">
+                            <div className="text-2xl font-black text-white tracking-tight">{session.sportName}</div>
+                            <div className="flex items-center gap-2 text-white/90 text-sm font-semibold">
+                                <Calendar className="w-4 h-4 flex-shrink-0" strokeWidth={2.2} />
+                                {isFindingSlot
+                                    ? <span>Date à définir · {slotCount} créneau{slotCount > 1 ? "x" : ""} proposé{slotCount > 1 ? "s" : ""}</span>
+                                    : <span>{formatFrenchDate(session.date)} · {formatSessionTimeRange(session.startTime, session.endTime)}</span>}
+                            </div>
+                            <div className="flex items-center gap-2 text-white/90 text-sm font-semibold">
+                                <MapPin className="w-4 h-4 flex-shrink-0" strokeWidth={2.2} />
+                                <span className="truncate">{session.location}</span>
+                            </div>
                         </div>
                     </div>
 
                     {/* Event details list */}
                     <div className="flex flex-col w-full border-t border-[#EFEFEF] mt-1">
-                        {session.scheduling === "finding_slot" ? (
-                            <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
-                                <div className="text-[#8CBF3D] flex-shrink-0">
-                                    <Calendar className="w-5 h-5" strokeWidth={2.2} />
-                                </div>
-                                <div className="text-slate-800 font-semibold text-sm">
-                                    Date à définir · {slotCount} créneau{slotCount > 1 ? "x" : ""} proposé{slotCount > 1 ? "s" : ""}
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                            {/* Date */}
-                            <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
-                                <div className="text-[#8CBF3D] flex-shrink-0">
-                                    <Calendar className="w-5 h-5" strokeWidth={2.2} />
-                                </div>
-                                <div className="text-slate-800 font-semibold text-sm">
-                                    {formatFrenchDate(session.date)}
-                                </div>
-                            </div>
-
-                            {/* Time */}
-                            <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
-                                <div className="text-[#8CBF3D] flex-shrink-0">
-                                    <Clock className="w-5 h-5" strokeWidth={2.2} />
-                                </div>
-                                <div className="text-slate-800 font-semibold text-sm">
-                                    {formatSessionTimeRange(session.startTime, session.endTime)}
-                                </div>
-                            </div>
-                            </>
-                        )}
-
-                        {/* Location */}
-                        <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
-                            <div className="text-[#8CBF3D] flex-shrink-0">
-                                <MapPin className="w-5 h-5" strokeWidth={2.2} />
-                            </div>
-                            <div className="text-slate-800 font-semibold text-sm truncate">
-                                {session.location}
-                            </div>
-                        </div>
-
                         {/* Organizer Name */}
                         <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
                             <div className="text-[#8CBF3D] flex-shrink-0">
