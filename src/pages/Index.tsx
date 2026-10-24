@@ -1,9 +1,16 @@
 import { CTAButton } from "@/components/ui/cta-button";
 import { Link } from "react-router-dom";
-import { Trophy, Users, Zap } from "lucide-react";
+import { Zap } from "lucide-react";
 import { HeroMockup } from "@/components/landing/HeroMockup";
 import { SquadFeature } from "@/components/landing/SquadFeature";
 import { StatsFeature } from "@/components/landing/StatsFeature";
+
+// Icônes 3D des sports (mêmes visuels que l'app), affichées en bande défilante
+const SPORT_STRIP = [
+  "football", "tennis", "padel", "basketball", "course", "musculation", "badminton", "volleyball",
+  "yoga", "boxe", "natation", "cyclisme", "golf", "escalade", "rugby", "handball", "ski", "surf",
+  "ping-pong", "randonnee", "squash", "danse", "judo", "petanque",
+];
 
 const Index = () => {
   const handleDownload = () => {
@@ -76,6 +83,25 @@ const Index = () => {
           </div>
         </section>
 
+        {/* TOUS LES SPORTS : bande défilante d'icônes 3D */}
+        <section aria-label="Sports disponibles" className="py-10 overflow-hidden">
+          <p className="text-center text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6">
+            Foot, padel, running, muscu… <span className="text-primary">48 sports</span>
+          </p>
+          <div className="relative [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="flex w-max gap-6 animate-sport-strip hover:[animation-play-state:paused]">
+              {[...SPORT_STRIP, ...SPORT_STRIP].map((sport, index) => (
+                <div
+                  key={`${sport}-${index}`}
+                  className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-3xl bg-zinc-900 border border-white/5 flex items-center justify-center"
+                >
+                  <img src={`/sports/${sport}.webp`} alt="" loading="lazy" className="w-14 h-14 sm:w-16 sm:h-16 object-contain" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* FEATURES SECTION */}
         <section id="features" className="py-24 px-6 bg-zinc-950/50">
           <div className="max-w-7xl mx-auto space-y-24">
@@ -89,9 +115,7 @@ const Index = () => {
                 </div>
               </div>
               <div className="order-1 lg:order-2 space-y-6 text-center lg:text-left">
-                <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center mx-auto lg:mx-0 border border-zinc-800">
-                  <Users className="w-6 h-6 text-primary" />
-                </div>
+                <img src="/brand/invite.webp" alt="" className="w-16 h-16 object-contain mx-auto lg:mx-0" />
                 <h2 className="text-4xl sm:text-5xl font-black italic uppercase tracking-tighter">
                   GÉREZ VOTRE <span className="text-primary">SQUAD</span>
                 </h2>
@@ -104,9 +128,7 @@ const Index = () => {
             {/* Feature 2: Stats */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-6 text-center lg:text-left">
-                <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center mx-auto lg:mx-0 border border-zinc-800">
-                  <Trophy className="w-6 h-6 text-primary" />
-                </div>
+                <img src="/brand/find-slot.webp" alt="" className="w-16 h-16 object-contain mx-auto lg:mx-0" />
                 <h2 className="text-4xl sm:text-5xl font-black italic uppercase tracking-tighter">
                   SUIVEZ VOTRE <span className="text-primary">LÉGENDE</span>
                 </h2>
