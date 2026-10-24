@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 
 // Configuration API (identique au reste de la landing, cf. PasswordReset.tsx)
-const API_BASE_URL = "https://api.sue.alliance-tech.fr";
+// Surchargeable en local (VITE_API_BASE_URL), prod par défaut
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://api.sue.alliance-tech.fr";
 
 // Lien App Store (identique au bouton de téléchargement de la home, cf. Index.tsx)
 const APP_STORE_URL = "https://apps.apple.com/fr/app/sue/id6749824461";
@@ -132,6 +133,23 @@ function formatFrenchDate(isoDate: string): string {
     } catch {
         return isoDate;
     }
+}
+
+// "2026-10-27" → { day: "27", month: "oct.", weekday: "mardi" }
+function splitSlotDate(isoDate: string) {
+    const [year, month, day] = isoDate.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return {
+        day: String(day),
+        month: date.toLocaleDateString("fr-FR", { month: "short" }),
+        weekday: date.toLocaleDateString("fr-FR", { weekday: "long" }),
+    };
+}
+
+// "18:00" → "18h", "18:30" → "18h30"
+function formatSlotHour(time: string) {
+    const [h, m] = time.split(":");
+    return m === "00" ? `${Number(h)}h` : `${Number(h)}h${m}`;
 }
 
 // Formatage de l'heure en français (ex: "18:00 - 19:00")
@@ -282,16 +300,17 @@ const Join = () => {
     const organizerRole = isFemale ? 'Organisatrice' : 'Organisateur';
 
 
-    // Extraction des participants confirmés (en excluant l'organisateur)
-    const confirmedParticipants = (session.participants || [])
-        .filter(p => !p.isOrganizer)
-        .filter(p => p.status === 'accepted');
+    // Autres joueurs (hors organisateur) : confirmés d'abord, puis invités en attente de réponse
+    const otherPlayers = (session.participants || [])
+        .filter(p => !p.isOrganizer && (p.status === 'accepted' || p.status === 'pending'))
+        .sort((a, b) => (a.status === 'accepted' ? 0 : 1) - (b.status === 'accepted' ? 0 : 1));
 
-    // On n'affiche que les 2 premiers autres confirmés
-    const otherShown = confirmedParticipants.slice(0, 2);
+    // On affiche les 3 premiers, le reste en "+N"
+    const otherShown = otherPlayers.slice(0, 3);
+    const extraCount = Math.max(0, otherPlayers.length - otherShown.length);
 
-    // Calcul du nombre de participants supplémentaires (si total > organisateur (1) + affichés)
-    const extraCount = Math.max(0, session.participantsCount - 1 - otherShown.length);
+    const isFindingSlot = session.scheduling === "finding_slot";
+    const slotCount = session.slotProposals?.length ?? 0;
 
     // Rendu d'avatar intelligent (photo de profil ou initiales)
     const renderParticipantAvatar = (
@@ -384,20 +403,12 @@ const Join = () => {
                     {/* Event details list */}
                     <div className="flex flex-col w-full border-t border-[#EFEFEF] mt-1">
                         {session.scheduling === "finding_slot" ? (
-                            <div className="flex items-start gap-3.5 py-2.5 border-b border-[#EFEFEF]">
+                            <div className="flex items-center gap-3.5 py-2.5 border-b border-[#EFEFEF]">
                                 <div className="text-[#8CBF3D] flex-shrink-0">
                                     <Calendar className="w-5 h-5" strokeWidth={2.2} />
                                 </div>
-                                <div className="flex flex-col gap-1 min-w-0">
-                                    <div className="text-slate-800 font-semibold text-sm">Date à définir</div>
-                                    {(session.slotProposals || []).map((slot) => (
-                                        <div key={`${slot.date}-${slot.startTime}`} className="text-slate-500 text-sm">
-                                            {formatFrenchDate(slot.date)} · {formatSessionTimeRange(slot.startTime, slot.endTime)}
-                                        </div>
-                                    ))}
-                                    <div className="text-slate-400 text-xs mt-0.5">
-                                        Dis quand tu peux jouer : l'organisateur choisit le créneau qui arrange le plus de monde
-                                    </div>
+                                <div className="text-slate-800 font-semibold text-sm">
+                                    Date à définir · {slotCount} créneau{slotCount > 1 ? "x" : ""} proposé{slotCount > 1 ? "s" : ""}
                                 </div>
                             </div>
                         ) : (
@@ -445,10 +456,50 @@ const Join = () => {
                         </div>
                     </div>
 
+                    {/* Créneaux proposés ("Trouver un créneau") : chaque créneau ouvre l'app comme le CTA du bas */}
+                    {isFindingSlot && slotCount > 0 && (
+                        <div className="bg-white rounded-3xl p-4 border border-[#EFEFEF] shadow-[0_4px_24px_rgba(0,0,0,0.015)] w-full my-1">
+                            <div className="text-[10px] font-black tracking-wider text-slate-400 uppercase mb-1">
+                                CRÉNEAUX PROPOSÉS
+                            </div>
+                            <p className="text-[12px] text-slate-500 font-medium mb-3 leading-snug">
+                                Dis quand tu peux jouer : {organizerFirstName} choisira le créneau qui arrange le plus de monde.
+                            </p>
+                            <div className="flex flex-col gap-2">
+                                {(session.slotProposals || []).map((slot) => {
+                                    const { day, month, weekday } = splitSlotDate(slot.date);
+                                    return (
+                                        <div
+                                            key={`${slot.date}-${slot.startTime}`}
+                                            className="flex items-center gap-3 rounded-2xl border border-[#EFEFEF] bg-[#FAFAFA] p-2.5"
+                                        >
+                                            <div className="w-12 h-12 flex-shrink-0 rounded-xl bg-[#F2F9EB] flex flex-col items-center justify-center leading-none">
+                                                <span className="text-[17px] font-black text-slate-900">{day}</span>
+                                                <span className="text-[9px] font-extrabold uppercase text-[#70A831] mt-0.5">{month}</span>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="text-slate-900 font-bold text-sm capitalize">{weekday}</div>
+                                                <div className="text-slate-500 font-semibold text-xs mt-0.5">
+                                                    {formatSlotHour(slot.startTime)} → {formatSlotHour(slot.endTime)}
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={handleOpenApp}
+                                                className="flex-shrink-0 bg-[#D4FC79] hover:bg-[#c9f662] text-black font-extrabold text-[12px] px-3 py-2 rounded-xl transition-all active:scale-[0.97]"
+                                            >
+                                                Je suis dispo
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Participants Card */}
                     <div className="bg-white rounded-3xl p-4 py-3 border border-[#EFEFEF] shadow-[0_4px_24px_rgba(0,0,0,0.015)] w-full my-1">
                         <div className="text-[10px] font-black tracking-wider text-slate-400 uppercase mb-3 text-center sm:text-left">
-                            PARTICIPANTS
+                            {isFindingSlot ? "JOUEURS INVITÉS" : "PARTICIPANTS"}
                         </div>
                         <div className="flex flex-wrap items-start justify-center gap-x-5 gap-y-3">
                             {/* Organizer */}
@@ -469,22 +520,40 @@ const Join = () => {
                                     <span className="text-slate-800 font-bold text-[10px] mt-1.5 truncate max-w-[64px] text-center">
                                         {p.fullName.split(' ')[0]}
                                     </span>
-                                    <span className="bg-[#EAFCD6] text-[#76A831] border border-[#DAF2BB] text-[8px] font-extrabold px-1.5 py-0.5 rounded-full mt-1.5 uppercase tracking-wide">
-                                        Participe
-                                    </span>
+                                    {p.status === 'accepted' ? (
+                                        <span className="bg-[#EAFCD6] text-[#76A831] border border-[#DAF2BB] text-[8px] font-extrabold px-1.5 py-0.5 rounded-full mt-1.5 uppercase tracking-wide">
+                                            Participe
+                                        </span>
+                                    ) : (
+                                        <span className="bg-zinc-100 text-zinc-500 border border-zinc-200 text-[8px] font-extrabold px-1.5 py-0.5 rounded-full mt-1.5 uppercase tracking-wide">
+                                            Invité
+                                        </span>
+                                    )}
                                 </div>
                             ))}
+
+                            {/* Autres joueurs non affichés */}
+                            {extraCount > 0 && (
+                                <div className="flex flex-col items-center min-w-[52px]">
+                                    <div className="w-11 h-11 rounded-full flex items-center justify-center bg-zinc-100 text-zinc-600 font-black text-sm select-none">
+                                        +{extraCount}
+                                    </div>
+                                    <span className="text-slate-500 font-bold text-[10px] mt-1.5 text-center">
+                                        autre{extraCount > 1 ? "s" : ""}
+                                    </span>
+                                </div>
+                            )}
 
                             {/* Guest Slot "et toi ?" */}
                             <div className="flex flex-col items-center min-w-[52px]">
                                 <div className="w-11 h-11 rounded-full border-2 border-dashed border-zinc-200 flex items-center justify-center bg-zinc-50 text-zinc-400 font-black text-sm select-none">
-                                    {extraCount > 0 ? `+${extraCount}` : "?"}
+                                    ?
                                 </div>
                                 <span className="text-slate-500 font-bold text-[10px] mt-1.5 truncate max-w-[64px] text-center">
                                     et toi ?
                                 </span>
-                                <span className="bg-zinc-100 text-zinc-500 border border-zinc-200 text-[8px] font-extrabold px-1.5 py-0.5 rounded-full mt-1.5 uppercase tracking-wide">
-                                    Invité
+                                <span className="bg-[#F5FCD2] text-[#8CA825] border border-[#E5F2A8] text-[8px] font-extrabold px-1.5 py-0.5 rounded-full mt-1.5 uppercase tracking-wide">
+                                    Toi
                                 </span>
                             </div>
                         </div>
@@ -496,7 +565,9 @@ const Join = () => {
                             <Zap className="w-5 h-5 fill-current" strokeWidth={1} />
                         </div>
                         <p className="text-[12px] text-slate-800 font-bold leading-snug">
-                            Confirme ta présence et reste informé des changements de la session.
+                            {isFindingSlot
+                                ? "Donne tes dispos, on te prévient dès que le créneau est choisi."
+                                : "Confirme ta présence et reste informé des changements de la session."}
                         </p>
                     </div>
 
