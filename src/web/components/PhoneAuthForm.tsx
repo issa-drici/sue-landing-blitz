@@ -89,11 +89,11 @@ export function PhoneAuthForm({ onDone }: { onDone: () => void }) {
                         <p className="text-sm text-slate-500 mt-1">Envoyé au {phone}</p>
                     </div>
                     <InputOTP
-                        maxLength={6} value={code} inputMode="numeric" autoComplete="one-time-code"
+                        maxLength={6} value={code} inputMode="numeric" autoComplete="one-time-code" autoFocus
                         onChange={(value) => { setCode(value); if (value.length === 6) verifyCode(value); }}
                     >
                         <InputOTPGroup>
-                            {[0, 1, 2, 3, 4, 5].map((i) => <InputOTPSlot key={i} index={i} className="w-11 h-14 text-lg font-bold bg-white" />)}
+                            {[0, 1, 2, 3, 4, 5].map((i) => <InputOTPSlot key={i} index={i} className="w-11 h-14 text-lg font-bold bg-white text-slate-900 border-[#E5E5E5]" />)}
                         </InputOTPGroup>
                     </InputOTP>
                     {isLoading && <Loader2 className="w-5 h-5 animate-spin text-slate-400" />}
