@@ -12,6 +12,9 @@ import Contact from "./pages/Contact";
 import PasswordReset from "./pages/PasswordReset";
 import Screenshots from "./pages/Screenshots";
 import Join from "./pages/Join";
+import WebLogin from "./web/pages/WebLogin";
+import WebSessions from "./web/pages/WebSessions";
+import WebSessionPage from "./web/pages/WebSessionPage";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +33,10 @@ const App = () => (
           <Route path="/password-reset/:token" element={<PasswordReset />} />
           <Route path="/screenshots" element={<Screenshots />} />
           <Route path="/join/:token" element={<Join />} />
+          {/* Espace web (Android et ordinateur) */}
+          <Route path="/app" element={<WebSessions />} />
+          <Route path="/app/connexion" element={<WebLogin />} />
+          <Route path="/app/session/:id" element={<WebSessionPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getSportIconUrl, getSportSurfaceUrl } from "@/lib/sportAssets";
-import { WebAnswerDrawer, getStoredToken } from "@/components/join/WebAnswerDrawer";
+import { WebAnswerDrawer } from "@/components/join/WebAnswerDrawer";
+import { getStoredToken } from "@/web/api";
 import {
     Loader2,
     AlertCircle,
@@ -588,7 +589,6 @@ const Join = () => {
                 <WebAnswerDrawer
                     open={isAnswerOpen}
                     onOpenChange={setIsAnswerOpen}
-                    apiBaseUrl={API_BASE_URL}
                     shareToken={token}
                     from={from}
                     isFindingSlot={isFindingSlot}
