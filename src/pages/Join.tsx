@@ -396,7 +396,7 @@ const Join = () => {
                                         </div>
                                     ))}
                                     <div className="text-slate-400 text-xs mt-0.5">
-                                        Indique tes disponibilités dans l'app
+                                        Dis quand tu peux jouer : l'organisateur choisit le créneau qui arrange le plus de monde
                                     </div>
                                 </div>
                             </div>
@@ -533,7 +533,7 @@ const Join = () => {
                             onClick={handleOpenApp}
                             className="w-full bg-[#D4FC79] hover:bg-[#c9f662] text-black font-black italic uppercase tracking-wider py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] text-[14px]"
                         >
-                            <span>Je rejoins la session</span>
+                            <span>{session.scheduling === "finding_slot" ? "Je donne mes dispos" : "Je rejoins la session"}</span>
                             <ArrowRight className="w-4 h-4" strokeWidth={3} />
                         </button>
                     </div>
