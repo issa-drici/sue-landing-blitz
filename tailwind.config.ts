@@ -57,6 +57,8 @@ export default {
       },
       fontFamily: {
         sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Inter', 'sans-serif'],
+        // Police de l'app Sue (landing)
+        outfit: ['Outfit', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -90,6 +92,7 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "sport-strip": "sport-strip 40s linear infinite",
+        "sport-strip-reverse": "sport-strip 46s linear infinite reverse",
       },
     },
   },

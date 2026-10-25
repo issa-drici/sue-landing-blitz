@@ -1,207 +1,108 @@
-import { CTAButton } from "@/components/ui/cta-button";
 import { Link } from "react-router-dom";
-import { Zap } from "lucide-react";
-import { HeroMockup } from "@/components/landing/HeroMockup";
-import { SquadFeature } from "@/components/landing/SquadFeature";
-import { StatsFeature } from "@/components/landing/StatsFeature";
+import { ArrowRight } from "lucide-react";
+import { AppStoreButton } from "@/components/landing/AppStoreButton";
+import { ChaosToSession } from "@/components/landing/ChaosToSession";
+import { PainToFix } from "@/components/landing/PainToFix";
 
-// Icônes 3D des sports (mêmes visuels que l'app), affichées en bande défilante
-const SPORT_STRIP = [
-  "football", "tennis", "padel", "basketball", "course", "musculation", "badminton", "volleyball",
-  "yoga", "boxe", "natation", "cyclisme", "golf", "escalade", "rugby", "handball", "ski", "surf",
-  "ping-pong", "randonnee", "squash", "danse", "judo", "petanque",
+// Icônes 3D des sports (mêmes visuels que l'app), sur deux bandes qui défilent en sens opposés
+const SPORTS_A = [
+    "football", "padel", "tennis", "basketball", "course", "musculation", "volleyball", "badminton",
+    "rugby", "handball", "escalade", "natation",
+];
+const SPORTS_B = [
+    "yoga", "boxe", "cyclisme", "golf", "ski", "surf", "ping-pong", "randonnee",
+    "squash", "danse", "judo", "petanque",
 ];
 
-const Index = () => {
-  const handleDownload = () => {
-    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-
-    if (/android/i.test(userAgent)) {
-      window.open('https://play.google.com/store/apps/details?id=com.alliancetech.com', '_blank');
-    } else if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
-      window.open('https://apps.apple.com/fr/app/sue/id6749824461', '_blank');
-    } else {
-      // Default fallback (e.g., iOS or homepage)
-      window.open('https://apps.apple.com/fr/app/sue/id6749824461', '_blank');
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col overflow-x-hidden">
-      {/* Navbar simplified */}
-      <nav className="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-        <div className="text-2xl font-black italic uppercase tracking-tighter text-primary">
-          SUE
-        </div>
-        <div className="hidden md:flex gap-6 text-sm font-bold uppercase tracking-wider">
-          {/* <a href="#features" className="hover:text-primary transition-colors">Fonctionnalités</a> */}
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="flex-1">
-        {/* HERO SECTION */}
-        <section className="relative px-6 py-12 lg:py-24 flex flex-col items-center">
-          {/* Background Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full -z-10" />
-
-          <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Left Column - Text & CTA */}
-            <div className="text-center lg:text-left space-y-8 z-10">
-              <div className="space-y-6">
-                <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter leading-[0.9]">
-                  DEVENEZ <br />
-                  UNE <span className="text-primary">LÉGENDE.</span>
-                </h1>
-                <p className="text-xl sm:text-2xl text-foreground/80 leading-relaxed max-w-lg mx-auto lg:mx-0 font-medium tracking-tight">
-                  Plus de bla-bla. Créez votre session de sport en 30 secondes, invitez votre squad et jouez.
-                </p>
-              </div>
-
-              <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <CTAButton
-                  onClick={handleDownload}
-                  aria-label="Télécharger l'app"
-                  className="text-xl italic uppercase tracking-wider font-black h-16 px-10"
-                >
-                  Télécharger l'app
-                </CTAButton>
-              </div>
-
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-sm text-zinc-500 font-medium">
-                <Zap className="w-4 h-4 text-primary" />
-                <span>Déjà <strong>2,000+</strong> matchs organisés ce mois-ci</span>
-              </div>
-            </div>
-
-            {/* Right Column - Hero Mockup */}
-            <div className="flex justify-center lg:justify-end relative group perspective-1000">
-              <div className="relative transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6">
-                <HeroMockup />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* TOUS LES SPORTS : bande défilante d'icônes 3D */}
-        <section aria-label="Sports disponibles" className="py-10 overflow-hidden">
-          <p className="text-center text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6">
-            Foot, padel, running, muscu… <span className="text-primary">48 sports</span>
-          </p>
-          <div className="relative [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            <div className="flex w-max gap-6 animate-sport-strip hover:[animation-play-state:paused]">
-              {[...SPORT_STRIP, ...SPORT_STRIP].map((sport, index) => (
+function SportRow({ sports, reverse = false }: { sports: string[]; reverse?: boolean }) {
+    return (
+        <div className="flex w-max gap-4 sm:gap-5 hover:[animation-play-state:paused] motion-reduce:animate-none" style={{ animation: `sport-strip ${reverse ? 46 : 40}s linear infinite${reverse ? " reverse" : ""}` }}>
+            {[...sports, ...sports].map((sport, index) => (
                 <div
-                  key={`${sport}-${index}`}
-                  className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-3xl bg-zinc-900 border border-white/5 flex items-center justify-center"
+                    key={`${sport}-${index}`}
+                    className="w-[88px] h-[88px] sm:w-[112px] sm:h-[112px] flex-shrink-0 rounded-[28px] bg-white border border-black/[0.05] shadow-[0_14px_30px_-22px_rgba(10,10,10,0.35)] flex items-center justify-center"
                 >
-                  <img src={`/sports/${sport}.webp`} alt="" loading="lazy" className="w-14 h-14 sm:w-16 sm:h-16 object-contain" />
+                    <img src={`/sports/${sport}.webp`} alt="" loading="lazy" className="w-[62px] h-[62px] sm:w-[78px] sm:h-[78px] object-contain" />
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FEATURES SECTION */}
-        <section id="features" className="py-24 px-6 bg-zinc-950/50">
-          <div className="max-w-7xl mx-auto space-y-24">
-
-            {/* Feature 1: Squad */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="order-2 lg:order-1 flex justify-center">
-                <div className="relative w-full flex justify-center">
-                  <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full" />
-                  <SquadFeature />
-                </div>
-              </div>
-              <div className="order-1 lg:order-2 space-y-6 text-center lg:text-left">
-                <img src="/brand/invite.webp" alt="" className="w-16 h-16 object-contain mx-auto lg:mx-0" />
-                <h2 className="text-4xl sm:text-5xl font-black italic uppercase tracking-tighter">
-                  GÉREZ VOTRE <span className="text-primary">SQUAD</span>
-                </h2>
-                <p className="text-xl text-zinc-400 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                  Fini les groupes WhatsApp. Créez votre équipe, gérez les invitations et voyez qui est chaud en un coup d'œil.
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 2: Stats */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-6 text-center lg:text-left">
-                <img src="/brand/find-slot.webp" alt="" className="w-16 h-16 object-contain mx-auto lg:mx-0" />
-                <h2 className="text-4xl sm:text-5xl font-black italic uppercase tracking-tighter">
-                  SUIVEZ VOTRE <span className="text-primary">LÉGENDE</span>
-                </h2>
-                <p className="text-xl text-zinc-400 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                  Chaque match compte. Gardez une trace de vos victoires, vos buts et votre progression. Devenez le MVP.
-                </p>
-              </div>
-              <div className="flex justify-center">
-                <div className="relative w-full flex justify-center">
-                  <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full" />
-                  <StatsFeature />
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* BOTTOM CTA */}
-        <section className="py-24 px-6 text-center">
-          <div className="max-w-4xl mx-auto space-y-10 bg-zinc-900/50 p-12 rounded-3xl border border-white/5">
-            <h2 className="text-4xl sm:text-6xl font-black italic uppercase tracking-tighter">
-              PRÊT À ENTRER SUR LE TERRAIN ?
-            </h2>
-            <div className="flex justify-center">
-              <CTAButton
-                onClick={handleDownload}
-                className="text-lg sm:text-xl italic uppercase tracking-wider font-black h-auto py-6 px-12 bg-white text-black hover:bg-zinc-200 whitespace-normal"
-              >
-                COMMENCER MAINTENANT
-              </CTAButton>
-            </div>
-          </div>
-        </section>
-
-      </main>
-
-      {/* Footer */}
-      <footer className="py-12 px-6 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-2xl font-black italic uppercase tracking-tighter text-zinc-700">
-            SUE
-          </div>
-          <nav className="flex flex-wrap justify-center gap-8 text-sm font-medium uppercase tracking-wide text-zinc-500">
-            <Link
-              to="/contact"
-              className="hover:text-primary transition-colors"
-            >
-              Contact
-            </Link>
-            <Link
-              to="/mentions-legales"
-              className="hover:text-primary transition-colors"
-            >
-              Mentions
-            </Link>
-            <Link
-              to="/confidentialite"
-              className="hover:text-primary transition-colors"
-            >
-              Confidentialité
-            </Link>
-            <Link
-              to="/conditions"
-              className="hover:text-primary transition-colors"
-            >
-              CGU
-            </Link>
-          </nav>
+            ))}
         </div>
-      </footer>
+    );
+}
+
+const Index = () => (
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0A0A0A] font-outfit overflow-x-clip selection:bg-[#D4FC79] selection:text-[#0A0A0A]">
+        <header className="fixed inset-x-0 top-0 z-50 bg-[#FAFAFA]/80 backdrop-blur-md">
+            <div className="mx-auto max-w-[1240px] h-[72px] px-5 sm:px-8 flex items-center justify-between">
+                <Link to="/" className="flex items-center gap-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#D4FC79]" aria-label="Sue, accueil">
+                    <img src="/adaptive-icon.png" alt="" className="w-9 h-9 rounded-[10px]" />
+                    <span className="font-black text-[24px] tracking-[-0.04em]">Sue</span>
+                </Link>
+                <AppStoreButton size="md" />
+            </div>
+        </header>
+
+        <main>
+            <ChaosToSession />
+
+            <PainToFix />
+
+            <section className="pt-24 sm:pt-32 pb-28 sm:pb-36" aria-labelledby="sports-title">
+                <div className="mx-auto max-w-[1240px] px-5 sm:px-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+                    <h2 id="sports-title" className="font-black text-[clamp(2.4rem,5.2vw,4.25rem)] leading-[0.98] tracking-[-0.035em] [text-wrap:balance]">
+                        Foot, padel, running, muscu…
+                    </h2>
+                    <p className="text-[18px] leading-relaxed text-[#3A3A3C] max-w-[24rem]">
+                        48 sports, et toutes tes bandes de potes au même endroit, même quand ce ne sont pas les mêmes.
+                    </p>
+                </div>
+                <div className="mt-14 flex flex-col gap-4 sm:gap-5 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+                    <SportRow sports={SPORTS_A} />
+                    <SportRow sports={SPORTS_B} reverse />
+                </div>
+            </section>
+
+            <section className="bg-[#D4FC79]" aria-labelledby="cta-title">
+                <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-24 sm:py-32 grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-end">
+                    <div>
+                        <h2 id="cta-title" className="font-black text-[clamp(3rem,8vw,6rem)] leading-[0.9] tracking-[-0.04em] [text-wrap:balance]">
+                            Ce <span className="whitespace-nowrap">week-end</span>, tu joues.
+                        </h2>
+                        <p className="mt-6 max-w-[30rem] text-[19px] leading-relaxed text-[#1F2A0A]">
+                            Sue est gratuite. Crée ta première session, partage le lien dans le groupe, et laisse tout le monde répondre.
+                        </p>
+                        <div className="mt-9">
+                            <AppStoreButton />
+                        </div>
+                    </div>
+                    <div className="lg:justify-self-end max-w-[22rem] rounded-[28px] bg-[#0A0A0A]/[0.06] p-6">
+                        <p className="text-[16px] font-bold">Sur Android ou ordinateur ?</p>
+                        <p className="mt-1.5 text-[15px] leading-relaxed text-[#1F2A0A]">
+                            L'app est sur iPhone pour l'instant. Tu peux quand même répondre aux invitations et suivre tes sessions sur le web.
+                        </p>
+                        <Link to="/app" className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-bold underline underline-offset-4 decoration-2 hover:gap-2.5 transition-[gap] rounded focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0A0A0A]/20">
+                            Ouvrir Sue sur le web <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer className="border-t border-black/[0.06]">
+            <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-2.5">
+                    <img src="/adaptive-icon.png" alt="" className="w-7 h-7 rounded-[8px]" />
+                    <span className="font-black text-[19px] tracking-[-0.04em]">Sue</span>
+                    <span className="text-[14px] text-[#8E8E93] ml-2">© {new Date().getFullYear()}</span>
+                </div>
+                <nav aria-label="Liens légaux" className="flex flex-wrap justify-center gap-x-7 gap-y-2 text-[14px] font-semibold text-[#55555A]">
+                    <Link to="/contact" className="hover:text-[#0A0A0A] underline-offset-4 hover:underline">Contact</Link>
+                    <Link to="/mentions-legales" className="hover:text-[#0A0A0A] underline-offset-4 hover:underline">Mentions légales</Link>
+                    <Link to="/confidentialite" className="hover:text-[#0A0A0A] underline-offset-4 hover:underline">Confidentialité</Link>
+                    <Link to="/conditions" className="hover:text-[#0A0A0A] underline-offset-4 hover:underline">CGU</Link>
+                </nav>
+            </div>
+        </footer>
     </div>
-  );
-};
+);
 
 export default Index;
