@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Plus } from "lucide-react";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { PhoneAuthForm } from "@/web/components/PhoneAuthForm";
+import { ProposeSlotForm, ProposedSlotInput } from "@/web/components/ProposeSlotForm";
 import { UnauthorizedError, apiFetch, getStoredToken } from "@/web/api";
 
 // Réponse à une invitation depuis le site, sans l'app (Android et ordinateur uniquement).
@@ -43,6 +44,7 @@ export function WebAnswerDrawer({
     const [doneMessage, setDoneMessage] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isProposing, setIsProposing] = useState(false);
 
     // À l'ouverture seulement (pas quand la page se rafraîchit après une réponse) :
     // déjà connecté -> directement la réponse
@@ -52,6 +54,7 @@ export function WebAnswerDrawer({
         wasOpen.current = open;
         if (!justOpened) return;
         setError(null);
+        setIsProposing(false);
         setStep(getStoredToken() ? "answer" : "auth");
         const preselected = new Set(viewerSlotIds ?? []);
         if (initialSlotId) preselected.add(initialSlotId);
@@ -85,6 +88,18 @@ export function WebAnswerDrawer({
         setDoneMessage(slotIds.length > 0
             ? "Tes dispos sont envoyées ! L'organisateur choisira le créneau qui arrange le plus de monde."
             : "C'est noté, l'organisateur sait qu'aucun créneau ne te va.");
+        setStep("done");
+        onAnswered();
+    });
+
+    // Aucun créneau ne va : rejoindre, garder les créneaux cochés, puis proposer le sien
+    const proposeSlot = (slot: ProposedSlotInput) => run(async () => {
+        const joined = await apiFetch<{ data: { id: string } }>(`/join/${shareToken}`, { method: "POST", body: from ? { from } : {} });
+        if (selectedSlots.length > 0) {
+            await apiFetch(`/sessions/${joined.data.id}/availability`, { method: "PUT", body: { slotIds: selectedSlots } });
+        }
+        await apiFetch(`/sessions/${joined.data.id}/slots/propose`, { method: "POST", body: slot });
+        setDoneMessage("Ton créneau est proposé ! Les autres vont pouvoir voter, l'organisateur choisira.");
         setStep("done");
         onAnswered();
     });
@@ -141,12 +156,32 @@ export function WebAnswerDrawer({
                                 </button>
                             );
                         })}
-                        <button className={`${primaryClass} mt-1`} disabled={isLoading || selectedSlots.length === 0} onClick={() => sendAvailability(selectedSlots)}>
-                            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Envoyer mes dispos"}
-                        </button>
-                        <button className="text-sm font-semibold text-slate-500 py-1" disabled={isLoading} onClick={() => sendAvailability([])}>
-                            Aucun créneau ne me va
-                        </button>
+                        {isProposing ? (
+                            <ProposeSlotForm
+                                existingSlots={slots}
+                                isPending={isLoading}
+                                onSubmit={proposeSlot}
+                                onCancel={() => setIsProposing(false)}
+                            />
+                        ) : (
+                            <button
+                                className="w-full py-3 rounded-2xl border-[1.5px] border-dashed border-[#8CBF3D] bg-[#F6FBEE] text-[#6FA12A] font-bold text-sm flex items-center justify-center gap-1.5"
+                                disabled={isLoading}
+                                onClick={() => setIsProposing(true)}
+                            >
+                                <Plus className="w-4 h-4" /> Proposer un autre créneau
+                            </button>
+                        )}
+                        {!isProposing && (
+                            <>
+                                <button className={`${primaryClass} mt-1`} disabled={isLoading || selectedSlots.length === 0} onClick={() => sendAvailability(selectedSlots)}>
+                                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Envoyer mes dispos"}
+                                </button>
+                                <button className="text-sm font-semibold text-slate-500 py-1" disabled={isLoading} onClick={() => sendAvailability([])}>
+                                    Aucun créneau ne me va
+                                </button>
+                            </>
+                        )}
                     </div>
                 )}
 

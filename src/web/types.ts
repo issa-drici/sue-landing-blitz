@@ -18,6 +18,7 @@ export interface WebSlot {
     endTime: string;
     availableUserIds: string[];
     availabilityCount: number;
+    proposedBy?: string | null; // invité qui l'a proposé, null si c'est l'organisateur
 }
 
 export interface WebSession {

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Check, Copy, Loader2, MapPin, Euro } from "lucide-react";
+import { ArrowLeft, Calendar, Check, Copy, Loader2, MapPin, Euro, Plus, X } from "lucide-react";
 import { apiFetch } from "@/web/api";
 import { SportBackdrop } from "@/web/components/SportBackdrop";
 import { WebLayout } from "@/web/components/WebLayout";
+import { ProposeSlotForm, ProposedSlotInput } from "@/web/components/ProposeSlotForm";
 import { firstName, formatDay, formatHour, formatRelativeDay, formatSlot, sportLabel } from "@/web/format";
 import { WebParticipant, WebSession, WebSlot, WebUser } from "@/web/types";
 
@@ -14,6 +15,17 @@ import { WebParticipant, WebSession, WebSlot, WebUser } from "@/web/types";
 const card = "bg-white rounded-3xl border border-[#EFEFEF] p-5";
 const primaryButton = "w-full h-13 py-3.5 rounded-2xl bg-[#D4FC79] text-black font-black text-[15px] flex items-center justify-center gap-2 disabled:opacity-50 transition-all active:scale-[0.98]";
 const secondaryButton = "w-full py-3.5 rounded-2xl bg-white border border-[#EFEFEF] font-bold text-[15px] disabled:opacity-50";
+
+/** Un invité peut proposer au plus 2 créneaux (même limite côté backend) */
+const MAX_PROPOSALS_PER_USER = 2;
+
+/** "Proposé par Karim" / "Proposé par toi" (rien pour les créneaux de l'organisateur) */
+const proposedByLabel = (session: WebSession, slot: WebSlot, userId?: string) => {
+    if (!slot.proposedBy) return null;
+    if (slot.proposedBy === userId) return "Proposé par toi";
+    const participant = session.participants.find((p) => p.id === slot.proposedBy);
+    return `Proposé par ${participant ? firstName(participant.fullName) : "un joueur"}`;
+};
 
 function useSessionAction(sessionId: string) {
     const queryClient = useQueryClient();
@@ -70,6 +82,19 @@ function SlotAnswer({ session, user, me }: { session: WebSession; user: WebUser;
     const send = (slotIds: string[]) =>
         action.mutate({ path: `/sessions/${session.id}/availability`, method: "PUT", body: { slotIds } });
 
+    const proposeAction = useSessionAction(session.id);
+    const [isProposing, setIsProposing] = useState(false);
+    const myProposalsCount = session.slotProposals.filter((s) => s.proposedBy === user.id).length;
+    const propose = (slot: ProposedSlotInput) =>
+        proposeAction.mutate(
+            { path: `/sessions/${session.id}/slots/propose`, method: "POST", body: slot },
+            { onSuccess: () => setIsProposing(false) }
+        );
+    const removeProposal = (slot: WebSlot) => {
+        if (!window.confirm(`Retirer le créneau ${formatSlot(slot)} ?`)) return;
+        proposeAction.mutate({ path: `/sessions/${session.id}/slots/${slot.id}`, method: "DELETE" });
+    };
+
     return (
         <div className={card}>
             <h2 className="text-lg font-black">Quand peux-tu jouer ?</h2>
@@ -80,20 +105,61 @@ function SlotAnswer({ session, user, me }: { session: WebSession; user: WebUser;
             <div className="flex flex-col gap-2 mt-4">
                 {session.slotProposals.map((slot) => {
                     const isOn = selected.includes(slot.id);
+                    const proposedBy = proposedByLabel(session, slot, user.id);
                     return (
-                        <button
+                        <div
                             key={slot.id}
+                            role="button"
+                            tabIndex={0}
                             onClick={() => setSelected((ids) => (isOn ? ids.filter((x) => x !== slot.id) : [...ids, slot.id]))}
-                            className={`flex items-center gap-3 rounded-2xl border p-3.5 text-left ${isOn ? "border-[#8CBF3D] bg-[#F7FBEF]" : "border-[#EFEFEF]"}`}
+                            className={`flex items-center gap-3 rounded-2xl border p-3.5 text-left cursor-pointer ${isOn ? "border-[#8CBF3D] bg-[#F7FBEF]" : "border-[#EFEFEF]"}`}
                         >
                             <span className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${isOn ? "bg-[#8CBF3D] border-[#8CBF3D]" : "border-[#C7C7CC]"}`}>
                                 {isOn && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
                             </span>
-                            <span className="font-bold text-sm">{formatSlot(slot)}</span>
-                        </button>
+                            <span className="flex-1 min-w-0">
+                                <span className="block font-bold text-sm">{formatSlot(slot)}</span>
+                                {proposedBy && <span className="block text-xs font-semibold text-[#6FA12A]">{proposedBy}</span>}
+                            </span>
+                            {slot.proposedBy === user.id && (
+                                <button
+                                    aria-label="Retirer ce créneau"
+                                    className="p-1 text-slate-400 hover:text-slate-700"
+                                    disabled={proposeAction.isPending}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeProposal(slot);
+                                    }}
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
                     );
                 })}
             </div>
+            {/* Aucun créneau ne va : l'invité en propose un, les autres votent dessus */}
+            {isProposing ? (
+                <div className="mt-3">
+                    <ProposeSlotForm
+                        existingSlots={session.slotProposals}
+                        isPending={proposeAction.isPending}
+                        error={proposeAction.error ? (proposeAction.error as Error).message : null}
+                        onSubmit={propose}
+                        onCancel={() => setIsProposing(false)}
+                    />
+                </div>
+            ) : myProposalsCount < MAX_PROPOSALS_PER_USER && (
+                <button
+                    className="mt-3 w-full py-3 rounded-2xl border-[1.5px] border-dashed border-[#8CBF3D] bg-[#F6FBEE] text-[#6FA12A] font-bold text-sm flex items-center justify-center gap-1.5"
+                    onClick={() => {
+                        proposeAction.reset();
+                        setIsProposing(true);
+                    }}
+                >
+                    <Plus className="w-4 h-4" /> Proposer un autre créneau
+                </button>
+            )}
             {/* Ligne toujours présente : les boutons ne bougent pas quand on coche une case */}
             {hasAnswered && (
                 <p className="text-sm text-slate-500 mt-3">
@@ -156,6 +222,7 @@ function SlotConfirm({ session }: { session: WebSession }) {
                             <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${isChosen ? "border-[#8CBF3D] bg-[#8CBF3D] shadow-[inset_0_0_0_3px_white]" : "border-[#C7C7CC]"}`} />
                             <span className="flex-1 min-w-0">
                                 <span className="block font-bold text-sm">{formatSlot(slot)}</span>
+                                {slot.proposedBy && <span className="block text-xs font-semibold text-[#6FA12A]">{proposedByLabel(session, slot)}</span>}
                                 {slot.availableUserIds.length > 0 && (
                                     <span className="block text-xs text-slate-500 truncate">{slot.availableUserIds.map(nameOf).join(", ")}</span>
                                 )}
