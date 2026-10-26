@@ -200,7 +200,7 @@ export function ChaosToSession() {
                     WhatsApp
                     {/* Coup de feutre volt qui barre le mot */}
                     <svg aria-hidden="true" viewBox="0 0 300 30" preserveAspectRatio="none" className="pointer-events-none absolute left-[-4%] top-[40%] w-[108%] h-[0.3em] -translate-y-1/2 -rotate-2">
-                        <path d="M5 17 C 80 11, 190 20, 295 13" stroke="#D4FC79" strokeWidth="18" strokeLinecap="round" fill="none" pathLength={1} className="[stroke-dasharray:1] [stroke-dashoffset:1] animate-[strike_0.7s_cubic-bezier(0.22,1,0.36,1)_0.35s_forwards] motion-reduce:animate-none motion-reduce:[stroke-dashoffset:0]" />
+                        <path d="M5 17 C 80 11, 190 20, 295 13" stroke="#D4FC79" strokeWidth="18" strokeLinecap="round" fill="none" pathLength={1} className="[stroke-dasharray:1_2] [stroke-dashoffset:1] animate-[strike_0.7s_cubic-bezier(0.22,1,0.36,1)_0.35s_forwards] motion-reduce:animate-none motion-reduce:[stroke-dashoffset:0]" />
                     </svg>
                 </span>
                 .

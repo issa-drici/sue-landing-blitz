@@ -75,7 +75,7 @@ export function RosterFragment() {
     const style = { ok: "bg-[#E9F8D2] text-[#3D6B12]", wait: "bg-[#F2F2F4] text-[#6B6B70]", no: "bg-[#FDECEC] text-[#B42318]" };
     return (
         <div className="w-full max-w-[380px] rounded-[28px] bg-white border border-black/[0.05] shadow-[0_24px_50px_-28px_rgba(10,10,10,0.3)] p-5">
-            <p className="font-outfit font-extrabold text-[17px]">Joueurs <span className="text-[#8A8A90] font-bold">· 3 confirmés</span></p>
+            <p className="font-outfit font-extrabold text-[17px]">Joueurs <span className="text-[#6B6B70] font-bold">· 3 confirmés</span></p>
             <ul className="mt-3 divide-y divide-black/[0.05]">
                 {rows.map((row, i) => (
                     <li key={row.name} className="flex items-center gap-3 py-2.5">

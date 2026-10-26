@@ -45,7 +45,7 @@ const ROWS: Row[] = [
 ];
 
 // Couleur du prénom, comme dans un groupe de discussion
-const SENDER_COLORS: Record<string, string> = { Camille: "#AD1457", Thomas: "#2E7D32", Hugo: "#EF6C00", Inès: "#4527A0" };
+const SENDER_COLORS: Record<string, string> = { Camille: "#AD1457", Thomas: "#1B5E20", Hugo: "#B34700", Inès: "#4527A0" };
 
 function PainBubble({ text, from }: { text: string; from: string }) {
     return (
