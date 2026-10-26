@@ -16,16 +16,20 @@ interface Bubble {
 }
 
 const BUBBLES: Bubble[] = [
-    { from: "Thomas", text: "Qui vient mardi ?? ⚽", x: 30, y: 33, rotate: -4 },
-    { from: "Lucas", text: "1. Thomas\n2. Lucas\n3.\n4.", x: 74, y: 31, rotate: 5 },
-    { from: "Karim", text: "jsp encore je vous dis", x: 22, y: 48, rotate: 3 },
-    { text: "Vous êtes combien au final ?", x: 70, y: 46, rotate: -3, mine: true },
-    { from: "Camille", text: "1. Thomas\n2. Lucas\n3. Camille\n4.", x: 38, y: 63, rotate: -6 },
-    { from: "Yanis", text: "C'est quel jour déjà ?", x: 80, y: 61, rotate: 4 },
-    { from: "Hugo", text: "@Nathan t'as vu mon message ?", x: 25, y: 77, rotate: 5 },
-    { from: "Sarah", text: "Désolée je peux plus 😕", x: 72, y: 76, rotate: -5 },
-    { from: "Inès", text: "On est 3 ??", x: 46, y: 89, rotate: 2 },
-    { from: "Lucas", text: "Je relance en privé…", x: 82, y: 90, rotate: -2 },
+    { from: "Thomas", text: "Qui vient mardi ?? ⚽", x: 26, y: 24, rotate: -4 },
+    { from: "Lucas", text: "1. Thomas\n2. Lucas\n3.\n4.", x: 70, y: 22, rotate: 5 },
+    { from: "Karim", text: "jsp encore je vous dis", x: 14, y: 37, rotate: 3 },
+    { from: "Léo", text: "moi peut-être", x: 52, y: 33, rotate: -7 },
+    { text: "Vous êtes combien au final ?", x: 82, y: 39, rotate: -3, mine: true },
+    { from: "Camille", text: "1. Thomas\n2. Lucas\n3. Camille\n4.", x: 36, y: 50, rotate: -6 },
+    { from: "Yanis", text: "C'est quel jour déjà ?", x: 74, y: 52, rotate: 4 },
+    { from: "Chloé", text: "1. Thomas\n2. Lucas\n3. Camille\n4. Chloé", x: 6, y: 58, rotate: 6 },
+    { from: "Hugo", text: "@Nathan t'as vu mon message ?", x: 30, y: 67, rotate: 5 },
+    { from: "Sarah", text: "Désolée je peux plus 😕", x: 70, y: 66, rotate: -5 },
+    { from: "Julien", text: "on joue où ?", x: 94, y: 74, rotate: 7 },
+    { from: "Inès", text: "On est 3 ??", x: 46, y: 80, rotate: 2 },
+    { from: "Lucas", text: "Je relance en privé…", x: 80, y: 86, rotate: -2 },
+    { from: "Karim", text: "ah c'était mardi ?", x: 16, y: 90, rotate: -4 },
 ];
 
 const GROUPS = [
@@ -36,6 +40,7 @@ const GROUPS = [
 const SENDER_COLORS: Record<string, string> = {
     Thomas: "#2E7D32", Lucas: "#6A1B9A", Karim: "#C62828", Camille: "#AD1457",
     Yanis: "#1565C0", Hugo: "#EF6C00", Sarah: "#00838F", Inès: "#4527A0",
+    Léo: "#5D4037", Chloé: "#00695C", Julien: "#283593",
 };
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
@@ -104,7 +109,7 @@ function GroupHeader({ group, unread }: { group: (typeof GROUPS)[number]; unread
             <span className="w-9 h-9 rounded-full bg-[#E4E4E8] flex items-center justify-center text-[#6B6B70]"><Users className="w-[18px] h-[18px]" /></span>
             <span className="leading-tight">
                 <span className="block text-[13px] font-bold text-[#1C1C1E]">{group.name}</span>
-                <span className="block text-[11px] text-[#8E8E93]">{group.members}</span>
+                <span className="block text-[11px] text-[#6B6B70]">{group.members}</span>
             </span>
             {unread > 0 && (
                 <span className="ml-1 min-w-[26px] h-[22px] rounded-full bg-[#FF3B30] px-1.5 text-[11px] font-bold text-white flex items-center justify-center tabular-nums">
@@ -195,18 +200,18 @@ export function ChaosToSession() {
                     WhatsApp
                     {/* Coup de feutre volt qui barre le mot */}
                     <svg aria-hidden="true" viewBox="0 0 300 30" preserveAspectRatio="none" className="pointer-events-none absolute left-[-4%] top-[40%] w-[108%] h-[0.3em] -translate-y-1/2 -rotate-2">
-                        <path d="M5 17 C 80 11, 190 20, 295 13" stroke="#D4FC79" strokeWidth="16" strokeLinecap="round" fill="none" />
+                        <path d="M5 17 C 80 11, 190 20, 295 13" stroke="#D4FC79" strokeWidth="18" strokeLinecap="round" fill="none" pathLength={1} className="[stroke-dasharray:1] [stroke-dashoffset:1] animate-[strike_0.7s_cubic-bezier(0.22,1,0.36,1)_0.35s_forwards] motion-reduce:animate-none motion-reduce:[stroke-dashoffset:0]" />
                     </svg>
                 </span>
                 .
             </h1>
-            <p className="mt-6 max-w-[34rem] font-outfit text-[clamp(1.1rem,1.6vw,1.35rem)] leading-relaxed text-[#3A3A3C]">
+            <p className="mt-6 max-w-[34rem] font-outfit font-medium text-[clamp(1.1rem,1.6vw,1.35rem)] leading-relaxed text-[#3A3A3C]">
                 Crée ta session de sport en 30 secondes, partage le lien et vois enfin qui vient.
                 Foot, padel, running, muscu… 48 sports, une seule appli.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
                 <AppStoreButton />
-                <span className="font-outfit text-[15px] font-semibold text-[#6B6B70]">Gratuit · sur iPhone</span>
+                <span className="font-outfit text-[15px] font-semibold text-[#55555A]">Gratuit · sur iPhone</span>
             </div>
             {/* Ce que la scène montre, dit en une ligne : le bazar, puis Sue */}
             <p aria-live="polite" className="mt-10 hidden lg:flex items-center gap-2.5 font-outfit text-[17px] font-semibold text-[#0A0A0A]">
@@ -222,7 +227,13 @@ export function ChaosToSession() {
             <section className="px-5 sm:px-8 pt-8 pb-16">
                 <div className="mx-auto max-w-[1240px] grid gap-12 lg:grid-cols-[1.05fr_1fr] items-center">
                     {copy}
-                    <div className="flex justify-center"><SessionCard /></div>
+                    <div className="relative h-[480px] rounded-[40px] bg-[#ECECEF] overflow-hidden [container-type:size]">
+                        <Stage progress={0} />
+                    </div>
+                </div>
+                <div className="mx-auto max-w-[1240px] mt-12 flex flex-col items-center gap-5">
+                    <p className="font-outfit text-[19px] font-semibold">Avec Sue : une session, tout le monde voit qui vient.</p>
+                    <SessionCard />
                 </div>
             </section>
         );
@@ -234,12 +245,15 @@ export function ChaosToSession() {
                 <div className="mx-auto max-w-[1240px] h-full px-5 sm:px-8 pt-24 pb-6 lg:pt-20 grid grid-rows-[auto_1fr] lg:grid-rows-1 lg:grid-cols-[1.05fr_1fr] lg:items-center gap-6 lg:gap-10">
                     {copy}
                     <div className="relative h-full min-h-[340px] lg:h-[min(640px,78svh)] [container-type:size]">
-                        <div className="absolute inset-0 rounded-[40px] bg-[#ECECEF]" style={{ opacity: 1 - easeOut(clamp((progress - 0.35) / 0.3)) * 0.55 }} />
-                        <Stage progress={progress} />
+                        <div className="absolute inset-0 rounded-[40px] bg-[#ECECEF]" style={{ opacity: 1 - easeOut(clamp((progress - 0.35) / 0.3)) }} />
+                        {/* Le bazar déborde du panneau ; la carte finale tient dedans */}
+                        <div className="absolute inset-0 rounded-[40px] overflow-hidden" style={{ overflow: progress > 0.5 ? "visible" : undefined }}>
+                            <Stage progress={progress} />
+                        </div>
                     </div>
                 </div>
                 <div
-                    className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 font-outfit text-[13px] font-semibold text-[#8E8E93] transition-opacity duration-300"
+                    className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 font-outfit text-[13px] font-semibold text-[#55555A] transition-opacity duration-300"
                     style={{ opacity: progress < 0.05 ? 1 : 0 }}
                 >
                     Fais défiler <ChevronDown className="w-4 h-4" />

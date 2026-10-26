@@ -44,11 +44,14 @@ const ROWS: Row[] = [
     },
 ];
 
+// Couleur du prénom, comme dans un groupe de discussion
+const SENDER_COLORS: Record<string, string> = { Camille: "#AD1457", Thomas: "#2E7D32", Hugo: "#EF6C00", Inès: "#4527A0" };
+
 function PainBubble({ text, from }: { text: string; from: string }) {
     return (
         <div className="inline-block max-w-[26rem] rounded-[24px] rounded-bl-[8px] bg-[#ECECEF] px-5 py-3.5">
-            <span className="block font-outfit text-[13px] font-bold text-[#8E8E93]">{from}, dans le groupe</span>
-            <span className="block font-outfit text-[19px] font-medium text-[#55555A] line-through decoration-[#0A0A0A]/40 decoration-2">
+            <span className="block font-outfit text-[13px] font-bold" style={{ color: SENDER_COLORS[from] }}>{from}</span>
+            <span className="block font-outfit text-[19px] font-medium text-[#3A3A3C] line-through decoration-[#0A0A0A]/45 decoration-2">
                 {text}
             </span>
         </div>
@@ -64,11 +67,11 @@ export function PainToFix() {
                 </h2>
             </div>
 
-            <div className="mt-16 sm:mt-20 flex flex-col">
+            <div className="mt-6 sm:mt-8 flex flex-col">
                 {ROWS.map((row, i) => {
                     const flip = i % 2 === 1;
                     return (
-                        <div key={row.title} className={row.band ? "bg-white border-y border-black/[0.05] py-20 sm:py-24 my-6 sm:my-10" : "py-14 sm:py-20"}>
+                        <div key={row.title} className={row.band ? "bg-[#F1F1F3] py-20 sm:py-24 my-6 sm:my-10" : "py-14 sm:py-20"}>
                             <div className={`mx-auto max-w-[1240px] px-5 sm:px-8 grid items-center gap-10 lg:gap-20 lg:grid-cols-2`}>
                                 <div className={flip ? "lg:order-2" : ""}>
                                     <PainBubble text={row.pain} from={row.from} />
@@ -77,7 +80,7 @@ export function PainToFix() {
                                             {row.title}
                                         </span>
                                     </h3>
-                                    <p className="mt-5 max-w-[30rem] font-outfit text-[18px] leading-relaxed text-[#3A3A3C]">{row.text}</p>
+                                    <p className="mt-5 max-w-[30rem] font-outfit font-medium text-[18px] leading-relaxed text-[#3A3A3C]">{row.text}</p>
                                 </div>
                                 <div className={`flex justify-center ${flip ? "lg:order-1 lg:justify-start" : "lg:justify-end"}`}>
                                     {row.fragment}

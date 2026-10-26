@@ -1,24 +1,18 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { SitePage } from "@/components/landing/SiteChrome";
 
-const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
-        </a>
-      </div>
-    </div>
-  );
-};
+const NotFound = () => (
+  <SitePage>
+    <img src="/sports/football.webp" alt="" className="w-28 h-28 object-contain" />
+    <h1 className="mt-6 text-[clamp(2.6rem,6vw,4rem)]">Hors-jeu.</h1>
+    <p className="mt-4 text-[19px] font-medium text-[#3A3A3C]">Cette page n'existe pas, ou plus.</p>
+    <Link
+      to="/"
+      className="mt-8 inline-flex items-center h-14 px-7 rounded-2xl bg-[#0A0A0A] text-white text-[16px] font-bold focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#D4FC79]"
+    >
+      Retour à l'accueil
+    </Link>
+  </SitePage>
+);
 
 export default NotFound;

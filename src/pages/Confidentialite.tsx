@@ -1,17 +1,8 @@
-import { Link } from "react-router-dom";
+import { SitePage } from "@/components/landing/SiteChrome";
 
 const Confidentialite = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="mb-8">
-          <Link 
-            to="/" 
-            className="text-foreground/70 hover:text-foreground transition-opacity text-sm"
-          >
-            ← Retour à l'accueil
-          </Link>
-        </div>
+    <SitePage>
         
         <div className="space-y-8">
           <div className="text-center mb-8">
@@ -428,8 +419,7 @@ const Confidentialite = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </SitePage>
   );
 };
 

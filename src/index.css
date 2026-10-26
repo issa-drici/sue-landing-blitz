@@ -15,34 +15,34 @@ All colors MUST be HSL.
     --brand-accent-2: 78 96% 90%; 
     --brand-accent-3: 78 96% 95%;
 
-    /* Sue Design System - Dark Mode by Default */
-    --background: 0 0% 0%; /* Black */
-    --foreground: 0 0% 100%; /* White */
+    /* Sue Design System - thème clair (comme l'app) */
+    --background: 0 0% 98%; /* #FAFAFA */
+    --foreground: 0 0% 4%; /* #0A0A0A */
 
-    --card: 0 0% 5%; /* Very dark grey */
-    --card-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
 
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
 
     --primary: 78 96% 73%; /* Electric Volt */
-    --primary-foreground: 0 0% 0%; /* Black Text on Volt */
+    --primary-foreground: 0 0% 4%; /* Texte noir sur volt */
 
-    --secondary: 0 0% 15%; /* Dark Grey */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 240 5% 93%; /* #ECECEF */
+    --secondary-foreground: 0 0% 4%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 240 5% 93%;
+    --muted-foreground: 240 3% 36%; /* #5A5A60 : lisible sur fond clair */
 
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 78 96% 90%;
+    --accent-foreground: 0 0% 4%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 78 96% 73%;
+    --border: 240 5% 90%;
+    --input: 240 5% 88%;
+    --ring: 82 54% 49%; /* volt foncé #8CBF3D : visible sur fond clair */
 
     --radius: 0.5rem; /* More rounded */
 

@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Impeccable : captures et réponses de travail (le brief et PRODUCT.md sont versionnés)
+.impeccable/review/
+.impeccable/questions/

@@ -218,15 +218,15 @@ const Join = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center p-4">
-                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <div className="min-h-screen bg-[#ECECEF] flex items-center justify-center p-4">
+                <Loader2 className="w-10 h-10 text-[#8CBF3D] animate-spin" />
             </div>
         );
     }
 
     if (isError || !session) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center p-4 font-sans">
+            <div className="min-h-screen bg-[#ECECEF] flex items-center justify-center p-4 font-sans">
                 <div className="w-full max-w-md bg-white p-8 rounded-3xl border border-[#EFEFEF] shadow-2xl text-center">
                     <div className="flex justify-center mb-6">
                         <AlertCircle className="w-14 h-14 text-red-500" />
@@ -312,9 +312,7 @@ const Join = () => {
 
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-0 sm:p-6 md:p-8 font-sans relative overflow-x-hidden">
-            {/* Effet de lueur verte volt en arrière-plan sur desktop */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4FC79]/10 blur-[150px] rounded-full pointer-events-none hidden sm:block" />
+        <div className="min-h-screen bg-[#ECECEF] flex items-center justify-center p-0 sm:p-6 md:p-8 font-sans relative overflow-x-hidden">
             
             {/* Conteneur principal (Pleinement responsive, carte centrée sur desktop, plein écran sur mobile) */}
             <div className="w-full sm:max-w-md bg-[#FAFAFA] sm:rounded-[32px] sm:shadow-2xl border-0 sm:border sm:border-[#EFEFEF] overflow-hidden flex flex-col justify-between p-6 pb-8 min-h-screen sm:min-h-0">

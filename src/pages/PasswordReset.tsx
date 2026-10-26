@@ -113,13 +113,13 @@ const PasswordReset = () => {
 
     if (isSuccess) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center p-4">
-                <div className="w-full max-w-md space-y-8 bg-card p-8 rounded-xl border border-border">
+            <div className="min-h-screen bg-[#FAFAFA] font-outfit flex items-center justify-center p-4">
+                <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-[28px] border border-black/[0.06] shadow-[0_24px_50px_-28px_rgba(10,10,10,0.3)]">
                     <div className="text-center space-y-4">
                         <div className="flex justify-center">
-                            <CheckCircle2 className="w-16 h-16 text-primary" />
+                            <CheckCircle2 className="w-16 h-16 text-[#8CBF3D]" />
                         </div>
-                        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">
+                        <h1 className="text-3xl font-black tracking-[-0.03em] text-[#0A0A0A]">
                             Succès !
                         </h1>
                         <p className="text-muted-foreground">
@@ -127,7 +127,7 @@ const PasswordReset = () => {
                         </p>
                         <Button
                             onClick={() => navigate("/")}
-                            className="w-full uppercase font-bold italic"
+                            className="w-full h-12 font-bold"
                         >
                             Retour à l'accueil
                         </Button>
@@ -138,16 +138,14 @@ const PasswordReset = () => {
     }
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-4">
-            <div className="w-full max-w-md space-y-6 bg-zinc-950 p-8 rounded-xl border border-zinc-800 shadow-2xl">
+        <div className="min-h-screen bg-[#FAFAFA] font-outfit flex items-center justify-center p-4">
+            <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-[28px] border border-black/[0.06] shadow-[0_24px_50px_-28px_rgba(10,10,10,0.3)]">
                 <div className="space-y-2 text-center">
-                    <h1 className="text-3xl font-black italic uppercase text-primary tracking-tighter">
-                        Sue
-                    </h1>
-                    <h2 className="text-2xl font-bold tracking-tight text-white">
+                    <img src="/adaptive-icon.png" alt="Sue" className="w-12 h-12 rounded-[14px] mx-auto" />
+                    <h2 className="text-2xl font-black tracking-tight text-[#0A0A0A]">
                         Nouveau mot de passe
                     </h2>
-                    <p className="text-sm text-zinc-400">
+                    <p className="text-sm text-[#55555A]">
                         Entrez votre nouveau mot de passe ci-dessous.
                     </p>
                 </div>
@@ -167,12 +165,12 @@ const PasswordReset = () => {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-zinc-200">Mot de passe</FormLabel>
+                                        <FormLabel className="text-[#0A0A0A]">Mot de passe</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="password"
                                                 placeholder="Min. 8 caractères"
-                                                className="bg-zinc-900 border-zinc-800 focus:border-primary text-white placeholder:text-zinc-600"
+                                                className="bg-white border-black/[0.1] focus:border-[#8CBF3D] text-[#0A0A0A] placeholder:text-[#8A8A90]"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -186,12 +184,12 @@ const PasswordReset = () => {
                                 name="password_confirmation"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-zinc-200">Confirmer le mot de passe</FormLabel>
+                                        <FormLabel className="text-[#0A0A0A]">Confirmer le mot de passe</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="password"
                                                 placeholder="Répétez le mot de passe"
-                                                className="bg-zinc-900 border-zinc-800 focus:border-primary text-white placeholder:text-zinc-600"
+                                                className="bg-white border-black/[0.1] focus:border-[#8CBF3D] text-[#0A0A0A] placeholder:text-[#8A8A90]"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -208,7 +206,7 @@ const PasswordReset = () => {
 
                             <Button
                                 type="submit"
-                                className="w-full h-12 text-base font-black italic uppercase tracking-wider bg-primary text-black hover:bg-primary/90"
+                                className="w-full h-12 text-base font-bold bg-[#D4FC79] text-[#0A0A0A] hover:bg-[#C6F05F]"
                                 disabled={isLoading}
                             >
                                 {isLoading ? (

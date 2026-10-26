@@ -41,16 +41,16 @@ export function SessionCard({ filled = 9, total = 10, className = "" }: { filled
                     <MapPin className="w-3.5 h-3.5" /> Five du Havre
                 </p>
                 <div className="mt-4 flex items-center justify-between">
-                    <div className="flex -space-x-2.5">
-                        {PLAYERS.slice(0, Math.min(filled, 6)).map((name, i) => (
-                            <Avatar key={name} name={name} index={i} size={34} ring />
+                    <div className="flex -space-x-1.5">
+                        {PLAYERS.slice(0, Math.min(filled, 5)).map((name, i) => (
+                            <Avatar key={name} name={name} index={i} size={36} ring />
                         ))}
-                        {filled > 6 && (
-                            <span className="inline-flex items-center justify-center w-[34px] h-[34px] rounded-full bg-[#F2F2F4] ring-[3px] ring-white text-[12px] font-bold">+{filled - 6}</span>
+                        {filled > 5 && (
+                            <span className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-full bg-[#F2F2F4] ring-[3px] ring-white text-[12px] font-bold">+{filled - 5}</span>
                         )}
                     </div>
                     <p className="font-outfit font-extrabold text-[22px] tabular-nums">
-                        {filled}<span className="text-[#A1A1A6]">/{total}</span>
+                        {filled}<span className="text-[#8A8A90]">/{total}</span>
                     </p>
                 </div>
                 <div className={`mt-4 rounded-2xl px-4 py-3 text-[14px] font-bold flex items-center justify-between ${missing > 0 ? "bg-[#D4FC79]" : "bg-[#0A0A0A] text-[#D4FC79]"}`}>
@@ -75,7 +75,7 @@ export function RosterFragment() {
     const style = { ok: "bg-[#E9F8D2] text-[#3D6B12]", wait: "bg-[#F2F2F4] text-[#6B6B70]", no: "bg-[#FDECEC] text-[#B42318]" };
     return (
         <div className="w-full max-w-[380px] rounded-[28px] bg-white border border-black/[0.05] shadow-[0_24px_50px_-28px_rgba(10,10,10,0.3)] p-5">
-            <p className="font-outfit font-extrabold text-[17px]">Joueurs <span className="text-[#A1A1A6] font-bold">· 3 confirmés</span></p>
+            <p className="font-outfit font-extrabold text-[17px]">Joueurs <span className="text-[#8A8A90] font-bold">· 3 confirmés</span></p>
             <ul className="mt-3 divide-y divide-black/[0.05]">
                 {rows.map((row, i) => (
                     <li key={row.name} className="flex items-center gap-3 py-2.5">
@@ -103,20 +103,20 @@ export function SlotVoteFragment() {
     return (
         <div className="w-full max-w-[380px] rounded-[28px] bg-white border border-black/[0.05] shadow-[0_24px_50px_-28px_rgba(10,10,10,0.3)] p-5">
             <p className="font-outfit font-extrabold text-[17px]">Choisis le créneau</p>
-            <p className="text-[13px] font-medium text-[#8E8E93] mt-0.5">6/6 ont répondu</p>
+            <p className="text-[13px] font-medium text-[#6B6B70] mt-0.5">6/6 ont répondu</p>
             <div className="mt-3 flex flex-col gap-2">
                 {slots.map((slot) => (
                     <div key={slot.day} className={`flex items-center gap-3 rounded-2xl border px-3.5 py-3 ${slot.best ? "border-[#8CBF3D] bg-[#F7FBEF]" : "border-black/[0.06]"}`}>
                         <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${slot.best ? "border-[#8CBF3D] bg-[#8CBF3D] shadow-[inset_0_0_0_3px_white]" : "border-[#C7C7CC]"}`} />
                         <span className="flex-1 min-w-0">
                             <span className="block font-bold text-[14px]">{slot.day} · {slot.time}</span>
-                            {slot.proposedBy && <span className="block text-[12px] font-semibold text-[#6FA12A]">Proposé par {slot.proposedBy}</span>}
-                            <span className="block text-[12px] text-[#8E8E93] truncate">{slot.names}</span>
+                            {slot.proposedBy && <span className="block text-[12px] font-semibold text-[#4E7A1A]">Proposé par {slot.proposedBy}</span>}
+                            <span className="block text-[12px] text-[#6B6B70] truncate">{slot.names}</span>
                         </span>
                         <span className={`rounded-full px-2.5 py-1 text-[12px] font-bold tabular-nums ${slot.best ? "bg-[#D4FC79]" : "bg-[#F2F2F4]"}`}>{slot.count} dispos</span>
                     </div>
                 ))}
-                <span className="flex items-center justify-center gap-1.5 rounded-2xl border-[1.5px] border-dashed border-[#8CBF3D] bg-[#F6FBEE] py-2.5 text-[13px] font-bold text-[#5E8C1F]">
+                <span className="flex items-center justify-center gap-1.5 rounded-2xl border-[1.5px] border-dashed border-[#8CBF3D] bg-[#F6FBEE] py-2.5 text-[13px] font-bold text-[#4E7A1A]">
                     <Plus className="w-4 h-4" /> Proposer un autre créneau
                 </span>
             </div>
@@ -129,7 +129,7 @@ export function NotificationsFragment() {
     const items = [
         { title: "Rappel : five demain à 19h", body: "Five du Havre · 9 joueurs confirmés", time: "hier" },
         { title: "Changement d'heure", body: "Le padel de jeudi passe à 20h30", time: "2 h" },
-        { title: "Rappel : five dans 1 heure", body: "Pense à prendre tes chaussures", time: "18:00" },
+        { title: "Rappel : running dans 1 heure", body: "Rendez-vous plage du Havre", time: "9:00" },
     ];
     return (
         <div className="w-full max-w-[380px] flex flex-col gap-2.5">
@@ -143,7 +143,7 @@ export function NotificationsFragment() {
                     <span className="flex-1 min-w-0">
                         <span className="flex items-center justify-between gap-2">
                             <span className="font-bold text-[14px] truncate">{item.title}</span>
-                            <span className="text-[12px] text-[#8E8E93] flex-shrink-0">{item.time}</span>
+                            <span className="text-[12px] text-[#6B6B70] flex-shrink-0">{item.time}</span>
                         </span>
                         <span className="block text-[13px] text-[#55555A] truncate">{item.body}</span>
                     </span>
@@ -162,7 +162,7 @@ export function FillFragment() {
         <div className="w-full max-w-[380px] rounded-[28px] bg-white border border-black/[0.05] shadow-[0_24px_50px_-28px_rgba(10,10,10,0.3)] p-5">
             <div className="flex items-baseline justify-between">
                 <p className="font-outfit font-extrabold text-[17px]">Padel jeudi</p>
-                <p className="font-outfit font-extrabold text-[28px] tabular-nums">3<span className="text-[#A1A1A6]">/4</span></p>
+                <p className="font-outfit font-extrabold text-[28px] tabular-nums">3<span className="text-[#8A8A90]">/4</span></p>
             </div>
             <div className="mt-3 grid grid-cols-4 gap-2">
                 {["Lucas M", "Sarah D", "Thomas B"].map((name, i) => (
@@ -171,7 +171,7 @@ export function FillFragment() {
                         <span className="text-[12px] font-semibold">{name.split(" ")[0]}</span>
                     </span>
                 ))}
-                <span className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border-[1.5px] border-dashed border-[#C7C7CC] py-3 text-[#8E8E93]">
+                <span className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border-[1.5px] border-dashed border-[#C7C7CC] py-3 text-[#6B6B70]">
                     <Plus className="w-5 h-5" />
                     <span className="text-[12px] font-semibold">Libre</span>
                 </span>
