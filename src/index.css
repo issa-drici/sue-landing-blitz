@@ -32,7 +32,7 @@ All colors MUST be HSL.
     --secondary-foreground: 0 0% 4%;
 
     --muted: 240 5% 93%;
-    --muted-foreground: 240 3% 36%; /* #5A5A60 : lisible sur fond clair */
+    --muted-foreground: 240 3% 35%; /* #55555A : gris de texte secondaire du site */
 
     --accent: 78 96% 90%;
     --accent-foreground: 0 0% 4%;

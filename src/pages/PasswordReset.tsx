@@ -170,7 +170,7 @@ const PasswordReset = () => {
                                             <Input
                                                 type="password"
                                                 placeholder="Min. 8 caractères"
-                                                className="bg-white border-black/[0.1] focus:border-[#8CBF3D] text-[#0A0A0A] placeholder:text-[#8A8A90]"
+                                                className="bg-white border-black/[0.1] focus:border-[#8CBF3D] text-[#0A0A0A] placeholder:text-[#6B6B70]"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -189,7 +189,7 @@ const PasswordReset = () => {
                                             <Input
                                                 type="password"
                                                 placeholder="Répétez le mot de passe"
-                                                className="bg-white border-black/[0.1] focus:border-[#8CBF3D] text-[#0A0A0A] placeholder:text-[#8A8A90]"
+                                                className="bg-white border-black/[0.1] focus:border-[#8CBF3D] text-[#0A0A0A] placeholder:text-[#6B6B70]"
                                                 {...field}
                                             />
                                         </FormControl>

@@ -8,7 +8,7 @@ export function SiteHeader() {
     return (
         <header className="fixed inset-x-0 top-0 z-50 bg-[#FAFAFA]/80 backdrop-blur-md">
             <div className="mx-auto max-w-[1240px] h-[72px] px-5 sm:px-8 flex items-center justify-between">
-                <Link to="/" className="flex items-center gap-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#D4FC79]" aria-label="Sue, accueil">
+                <Link to="/" className="flex items-center gap-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#8CBF3D]" aria-label="Sue, accueil">
                     <img src="/adaptive-icon.png" alt="" className="w-9 h-9 rounded-[10px]" />
                     <span className="font-outfit font-black text-[24px] tracking-[-0.04em]">Sue</span>
                 </Link>

@@ -1,0 +1,465 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-26T06:41:18+00:00",
+  "title": "Design System: Sue",
+  "extensions": {
+    "colorMeta": {
+      "ground-blanc-casse": {
+        "role": "neutral",
+        "displayName": "Blanc Cassé",
+        "canonical": "oklch(98.5% 0 0)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#808080",
+          "#A4A4A4",
+          "#CACACA",
+          "#EEEEEE"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Encre",
+        "canonical": "oklch(14.5% 0 0)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#808080",
+          "#A4A4A4",
+          "#CACACA",
+          "#EEEEEE"
+        ]
+      },
+      "volt": {
+        "role": "primary",
+        "displayName": "Vert Volt",
+        "canonical": "oklch(93.6% 0.164 124)",
+        "tonalRamp": [
+          "#050F00",
+          "#1B2A00",
+          "#354800",
+          "#506800",
+          "#718C26",
+          "#93B344",
+          "#B6DB61",
+          "#D9FF7F"
+        ]
+      },
+      "volt-dark": {
+        "role": "primary",
+        "displayName": "Volt Profond",
+        "canonical": "oklch(74.3% 0.167 128)",
+        "tonalRamp": [
+          "#001100",
+          "#112D00",
+          "#2A4B00",
+          "#456B00",
+          "#649011",
+          "#85B737",
+          "#ACDE68",
+          "#D1FF94"
+        ]
+      },
+      "surface-white": {
+        "role": "neutral",
+        "displayName": "Blanc Carte",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#808080",
+          "#A4A4A4",
+          "#CACACA",
+          "#EEEEEE"
+        ]
+      },
+      "stage-grey": {
+        "role": "neutral",
+        "displayName": "Gris Bulle",
+        "canonical": "oklch(94.4% 0.004 286)",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#242426",
+          "#3F3F42",
+          "#5D5D60",
+          "#808082",
+          "#A4A4A7",
+          "#CACACD",
+          "#EEEEF1"
+        ]
+      },
+      "band-grey": {
+        "role": "neutral",
+        "displayName": "Gris Bande",
+        "canonical": "oklch(95.9% 0.003 286)",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#242426",
+          "#3F3F42",
+          "#5D5D60",
+          "#808082",
+          "#A4A4A7",
+          "#CACACD",
+          "#EEEEF1"
+        ]
+      },
+      "chip-grey": {
+        "role": "neutral",
+        "displayName": "Gris Pastille",
+        "canonical": "oklch(96.2% 0.003 286)",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#242426",
+          "#3F3F42",
+          "#5D5D60",
+          "#808082",
+          "#A4A4A7",
+          "#CACACD",
+          "#EEEEF1"
+        ]
+      },
+      "text-body": {
+        "role": "neutral",
+        "displayName": "Gris Texte",
+        "canonical": "oklch(34.9% 0.003 286)",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#242426",
+          "#3F3F42",
+          "#5D5D60",
+          "#808082",
+          "#A4A4A7",
+          "#CACACD",
+          "#EEEEF1"
+        ]
+      },
+      "text-secondary": {
+        "role": "neutral",
+        "displayName": "Gris Secondaire",
+        "canonical": "oklch(45.1% 0.008 286)",
+        "tonalRamp": [
+          "#0B0B0E",
+          "#242328",
+          "#3F3F44",
+          "#5D5D62",
+          "#808085",
+          "#A4A4A9",
+          "#CACAD0",
+          "#EEEEF4"
+        ]
+      },
+      "text-tertiary": {
+        "role": "neutral",
+        "displayName": "Gris Tertiaire",
+        "canonical": "oklch(52.9% 0.008 286)",
+        "tonalRamp": [
+          "#0B0B0E",
+          "#242428",
+          "#3F3F44",
+          "#5D5D62",
+          "#808085",
+          "#A4A4A9",
+          "#CACACF",
+          "#EEEEF4"
+        ]
+      },
+      "ink-on-volt": {
+        "role": "neutral",
+        "displayName": "Encre Olive",
+        "canonical": "oklch(26.6% 0.054 126)",
+        "tonalRamp": [
+          "#060E00",
+          "#1E2809",
+          "#394527",
+          "#576346",
+          "#7A8569",
+          "#9EA98F",
+          "#C5CFB7",
+          "#E9F3DC"
+        ]
+      },
+      "success-ink": {
+        "role": "neutral",
+        "displayName": "Vert Confirmé",
+        "canonical": "oklch(47.7% 0.126 134)",
+        "tonalRamp": [
+          "#001200",
+          "#082E00",
+          "#234C00",
+          "#3E6C14",
+          "#638F43",
+          "#89B36D",
+          "#B0D997",
+          "#D6FCBF"
+        ]
+      },
+      "unread-red": {
+        "role": "neutral",
+        "displayName": "Rouge Non-lus",
+        "canonical": "oklch(65.4% 0.232 29)",
+        "tonalRamp": [
+          "#370000",
+          "#600000",
+          "#8A0000",
+          "#B60000",
+          "#E82921",
+          "#FF5B4B",
+          "#FF8D79",
+          "#FFB8A3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Titre du haut de page et bande finale volt."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Titres de section."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Titres de fonctionnalité, surlignés au volt."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Sous-titre du haut de page."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraphes, 30rem de large au plus."
+      },
+      "ui-title": {
+        "displayName": "UI title",
+        "purpose": "Titres des fragments d'app."
+      },
+      "ui-body": {
+        "displayName": "UI body",
+        "purpose": "Libellés et lignes de liste dans les fragments."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Métadonnées et mentions."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-hero",
+        "value": "0 30px 60px -24px rgba(10,10,10,0.35)",
+        "purpose": "Carte de session qui naît du bazar."
+      },
+      {
+        "name": "card-fragment",
+        "value": "0 24px 50px -28px rgba(10,10,10,0.3)",
+        "purpose": "Cartes d'app des galères."
+      },
+      {
+        "name": "notification",
+        "value": "0 18px 40px -26px rgba(10,10,10,0.35)",
+        "purpose": "Notifications empilées."
+      },
+      {
+        "name": "sport-tile",
+        "value": "0 14px 30px -22px rgba(10,10,10,0.35)",
+        "purpose": "Tuiles des bandes de sports."
+      },
+      {
+        "name": "bubble",
+        "value": "0 10px 24px -14px rgba(10,10,10,0.45)",
+        "purpose": "Bulles du bazar."
+      },
+      {
+        "name": "group-header",
+        "value": "0 12px 28px -16px rgba(10,10,10,0.4)",
+        "purpose": "En-têtes de groupe du bazar."
+      },
+      {
+        "name": "button-hover",
+        "value": "0 14px 30px -12px rgba(10,10,10,0.55)",
+        "purpose": "Survol du bouton encre, avec montée de 2px."
+      }
+    ],
+    "motion": [
+      {
+        "name": "button-lift",
+        "value": "transform, box-shadow 300ms ease-out",
+        "purpose": "Montée de 2px du bouton au survol."
+      },
+      {
+        "name": "strike-draw",
+        "value": "0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards",
+        "purpose": "Trait de feutre volt qui barre « WhatsApp »."
+      },
+      {
+        "name": "sport-strip",
+        "value": "40s linear infinite (46s reverse pour la 2e bande)",
+        "purpose": "Défilement des bandes de sports, en pause au survol."
+      },
+      {
+        "name": "chaos-collapse",
+        "value": "easeInOutCubic piloté par le scroll sur 240vh",
+        "purpose": "Aspiration des bulles dans la carte de session ; remplacée par une version empilée si prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton App Store",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Action principale du site : bouton encre, grand format.",
+      "html": "<a class=\"ds-btn-store\" href=\"#\"><svg viewBox=\"0 0 384 512\" width=\"26\" height=\"26\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z\"/></svg><span class=\"ds-btn-store-text\"><span class=\"ds-btn-store-small\">Télécharger sur</span><span class=\"ds-btn-store-big\">l'App Store</span></span></a>",
+      "css": ".ds-btn-store { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; display: inline-flex; align-items: center; gap: 12px; height: 64px; padding: 0 28px 0 20px; border-radius: 16px; background: #0A0A0A; color: #fff; text-decoration: none; transition: transform 300ms ease-out, box-shadow 300ms ease-out; } .ds-btn-store:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgba(10,10,10,0.55); } .ds-btn-store:active { transform: none; } .ds-btn-store:focus-visible { outline: none; box-shadow: 0 0 0 4px #D4FC79; } .ds-btn-store-text { display: flex; flex-direction: column; line-height: 1; } .ds-btn-store-small { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.7); margin-bottom: 4px; } .ds-btn-store-big { font-size: 22px; font-weight: 700; letter-spacing: -0.025em; }"
+    },
+    {
+      "name": "Bouton texte",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Bouton encre des pages de texte (Contact, 404).",
+      "html": "<button class=\"ds-btn-text\">Envoyer</button>",
+      "css": ".ds-btn-text { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; height: 56px; padding: 0 28px; border: none; border-radius: 16px; background: #0A0A0A; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 200ms ease-out; } .ds-btn-text:hover { transform: translateY(-2px); } .ds-btn-text:focus-visible { outline: none; box-shadow: 0 0 0 4px #D4FC79; } .ds-btn-text:disabled { opacity: 0.4; transform: none; }"
+    },
+    {
+      "name": "Champ message",
+      "kind": "input",
+      "refersTo": "input-message",
+      "description": "Zone de texte du formulaire de contact.",
+      "html": "<textarea class=\"ds-input\" placeholder=\"Ton message\"></textarea>",
+      "css": ".ds-input { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; width: 320px; min-height: 120px; padding: 16px 20px; border: 1px solid rgba(0,0,0,0.08); border-radius: 22px; background: #fff; color: #0A0A0A; font-size: 16px; font-weight: 500; resize: vertical; } .ds-input::placeholder { color: #6B6B70; } .ds-input:focus { outline: none; border-color: #8CBF3D; box-shadow: 0 0 0 4px rgba(212,252,121,0.6); }"
+    },
+    {
+      "name": "En-tête du site",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "En-tête fixe translucide : logotype et bouton App Store compact.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-logo\" href=\"#\"><span class=\"ds-nav-icon\"></span>Sue</a><a class=\"ds-nav-btn\" href=\"#\">Télécharger</a></header>",
+      "css": ".ds-nav { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; display: flex; align-items: center; justify-content: space-between; height: 72px; padding: 0 32px; background: rgba(250,250,250,0.8); backdrop-filter: blur(12px); } .ds-nav-logo { display: flex; align-items: center; gap: 10px; color: #0A0A0A; text-decoration: none; font-weight: 900; font-size: 24px; letter-spacing: -0.04em; border-radius: 12px; } .ds-nav-logo:focus-visible { outline: none; box-shadow: 0 0 0 4px #8CBF3D; } .ds-nav-icon { width: 36px; height: 36px; border-radius: 10px; background: #D4FC79; } .ds-nav-btn { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 16px; background: #0A0A0A; color: #fff; font-size: 15px; font-weight: 700; text-decoration: none; transition: transform 300ms ease-out, box-shadow 300ms ease-out; } .ds-nav-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgba(10,10,10,0.55); } .ds-nav-btn:focus-visible { outline: none; box-shadow: 0 0 0 4px #D4FC79; }"
+    },
+    {
+      "name": "Pastilles d'état",
+      "kind": "chip",
+      "refersTo": "chip-neutral",
+      "description": "États de réponse d'un joueur, comme dans l'app.",
+      "html": "<span class=\"ds-chip ds-chip-ok\">Je viens</span> <span class=\"ds-chip ds-chip-wait\">En attente</span> <span class=\"ds-chip ds-chip-no\">Ne peut pas</span> <span class=\"ds-chip ds-chip-best\">5 dispos</span>",
+      "css": ".ds-chip { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; display: inline-block; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; } .ds-chip-ok { background: #E9F8D2; color: #3D6B12; } .ds-chip-wait { background: #F2F2F4; color: #6B6B70; } .ds-chip-no { background: #FDECEC; color: #B42318; } .ds-chip-best { background: #D4FC79; color: #0A0A0A; }"
+    },
+    {
+      "name": "Carte de session",
+      "kind": "card",
+      "refersTo": "card-app",
+      "description": "Carte d'app à 28px : compteur et bloc d'appel volt.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-title\">Padel jeudi <span>3<em>/4</em></span></p><p class=\"ds-card-meta\">Five du Havre · Jeudi 20h30</p><div class=\"ds-card-cta\">Il manque 1 joueur</div></div>",
+      "css": ".ds-card { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; width: 320px; padding: 20px; border-radius: 28px; background: #fff; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 24px 50px -28px rgba(10,10,10,0.3); color: #0A0A0A; } .ds-card-title { margin: 0; display: flex; justify-content: space-between; align-items: baseline; font-size: 17px; font-weight: 800; } .ds-card-title span { font-size: 28px; font-variant-numeric: tabular-nums; } .ds-card-title em { font-style: normal; color: #8A8A90; } .ds-card-meta { margin: 4px 0 0; font-size: 13px; font-weight: 500; color: #6B6B70; } .ds-card-cta { margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: #D4FC79; font-size: 14px; font-weight: 700; }"
+    },
+    {
+      "name": "Bulles de discussion",
+      "kind": "custom",
+      "refersTo": "chat-bubble",
+      "description": "Bulles génériques du bazar : reçue avec prénom coloré, et bulle « moi » en encre.",
+      "html": "<div class=\"ds-chat\"><div class=\"ds-bubble\"><b style=\"color:#2E7D32\">Thomas</b>Qui vient mardi ?? ⚽</div><div class=\"ds-bubble ds-bubble-mine\">Vous êtes combien au final ?</div></div>",
+      "css": ".ds-chat { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #ECECEF; border-radius: 40px; } .ds-bubble { max-width: 210px; padding: 10px 14px; border-radius: 20px 20px 20px 6px; background: #fff; color: #1C1C1E; font-size: 14px; line-height: 1.375; box-shadow: 0 10px 24px -14px rgba(10,10,10,0.45); transform: rotate(-4deg); } .ds-bubble b { display: block; font-size: 12px; margin-bottom: 2px; } .ds-bubble-mine { align-self: flex-end; background: #0A0A0A; color: #fff; border-radius: 20px 20px 6px 20px; transform: rotate(3deg); }"
+    },
+    {
+      "name": "Titre surligné",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Titre de fonctionnalité Outfit 900 avec la bande volt du surligneur.",
+      "html": "<h3 class=\"ds-hl\"><span>Pas de date ? On vote.</span></h3>",
+      "css": ".ds-hl { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; font-size: 44px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; color: #0A0A0A; } .ds-hl span { background: linear-gradient(transparent 58%, #D4FC79 58%, #D4FC79 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 4px; margin: 0 -4px; }"
+    },
+    {
+      "name": "Bulle de galère",
+      "kind": "custom",
+      "refersTo": "pain-bubble",
+      "description": "Message de groupe barré qui introduit chaque fonctionnalité.",
+      "html": "<div class=\"ds-pain\"><b style=\"color:#AD1457\">Camille</b><s>Je recopie la liste et je rajoute mon nom</s></div>",
+      "css": ".ds-pain { font-family: Outfit, -apple-system, BlinkMacSystemFont, sans-serif; display: inline-block; max-width: 26rem; padding: 14px 20px; border-radius: 24px 24px 24px 8px; background: #ECECEF; } .ds-pain b { display: block; font-size: 13px; font-weight: 700; } .ds-pain s { display: block; font-size: 19px; font-weight: 500; color: #3A3A3C; text-decoration-color: rgba(10,10,10,0.45); text-decoration-thickness: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le groupe qui se range",
+    "overview": "**Creative North Star: \"Le groupe qui se range\"**\n\nLe site vitrine de Sue vit dans le même monde clair que l'app : un fond blanc cassé, de l'encre presque noire, et un seul accent, le vert volt, posé en aplats comme un coup de surligneur. Tout le reste est emprunté à deux matières que le visiteur connaît déjà : le fil d'un groupe de discussion (bulles grises et blanches, prénoms colorés, pastille rouge de non-lus) et les cartes de l'app Sue (blanches, très arrondies, avec les icônes 3D de sport). Le récit visuel va de l'un à l'autre : le bazar d'abord, la session nette ensuite.\n\nLa densité est généreuse : grands titres Outfit 900 serrés, une colonne de 1240px, de larges respirations entre les sections, et des fragments d'interface réels plutôt que des illustrations. La profondeur est douce : ombres d'encre diffuses, jamais de relief dur. Le mouvement sert le récit (l'aspiration des bulles dans la carte au scroll, le trait de feutre qui barre « WhatsApp », les bandes de sports qui défilent) et s'efface entièrement quand l'utilisateur demande moins d'animation.\n\nRejets confirmés par le contrat de direction : le hero « slogan + mockup de téléphone + grille de fonctionnalités », l'imitation de la marque WhatsApp, et toute preuve sociale inventée.",
+    "keyCharacteristics": [
+      "Fond clair #FAFAFA, encre #0A0A0A, un seul accent volt en aplats.",
+      "Outfit 900 à interlettrage négatif pour tous les titres, Outfit 500 pour le texte.",
+      "Bulles de discussion génériques et cartes d'app blanches à grands rayons comme seuls décors.",
+      "Icônes 3D de sport maison, jamais de pictogrammes à la place.",
+      "L'action est toujours un bouton noir.",
+      "Ombres d'encre diffuses à étalement négatif ; aucun contour dur."
+    ],
+    "rules": [
+      {
+        "name": "The Volt Flat Rule",
+        "body": "Le volt se pose en aplat ou en trait épais, jamais en texte sur fond clair, jamais en dégradé ni en halo. Quand le volt doit se lire comme un contour ou un état sur blanc, on passe au Volt Profond.",
+        "section": "colors"
+      },
+      {
+        "name": "The Red Is Chaos Rule",
+        "body": "Le rouge #FF3B30 n'apparaît que dans le bazar (non-lus, point d'état « avant »). Dès que Sue entre en scène, il disparaît.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Grey Rule",
+        "body": "Sur fond clair, le texte de moins de 18px n'utilise que #3A3A3C, #55555A ou #6B6B70. Les gris plus clairs (#8A8A90, #C7C7CC) restent réservés aux dénominateurs en gros chiffres et aux traits.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tight Display Rule",
+        "body": "Tout titre est en Outfit 900 avec un interlettrage entre -0.03em et -0.04em et un interlignage inférieur ou égal à 1. Pas de titre en graisse moyenne, pas de police système pour les titres.",
+        "section": "typography"
+      },
+      {
+        "name": "The Highlighter Rule",
+        "body": "Un titre de fonctionnalité se marque par une bande volt derrière le bas des lettres (de 58 % à 92 % de la hauteur), avec `box-decoration-break: clone` pour suivre les retours à la ligne. C'est le seul ornement typographique du système.",
+        "section": "typography"
+      },
+      {
+        "name": "The Soft Ink Shadow Rule",
+        "body": "Toute ombre est teintée de l'encre #0A0A0A, a un flou au moins deux fois plus grand que son décalage et un étalement négatif. Une ombre qui dessine un bord net n'appartient pas à ce monde.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Concentric Radius Rule",
+        "body": "Plus l'objet est grand, plus son rayon l'est : 16 → 22 → 28 → 40. Un bloc posé dans une carte à 28px prend 16px.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** poser le volt #D4FC79 en aplat (surligneur, trait de feutre, bande, bloc d'appel) et passer au Volt Profond #8CBF3D pour tout contour ou état sur fond clair.",
+      "**Do** composer chaque titre en Outfit 900, interlettrage -0.03em à -0.04em, interlignage ≤ 1.",
+      "**Do** montrer de vrais fragments de l'app (cartes à 28px, avatars à initiales, icônes 3D) plutôt que des illustrations ou des pictogrammes.",
+      "**Do** garder l'action principale en bouton encre #0A0A0A à 16px de rayon, avec anneau de focus volt.",
+      "**Do** teinter toutes les ombres à l'encre avec un étalement négatif.",
+      "**Do** prévoir une version sans mouvement pour chaque animation (`prefers-reduced-motion`) : le bazar puis la session, l'un sous l'autre."
+    ],
+    "donts": [
+      "**Don't** reprendre le logo, le vert ou l'interface de WhatsApp : les bulles restent génériques.",
+      "**Don't** construire un hero « slogan + mockup de téléphone + grille de fonctionnalités ».",
+      "**Don't** écrire du texte en volt sur fond clair, ni utiliser le volt en dégradé ou en lueur.",
+      "**Don't** utiliser le rouge #FF3B30 ailleurs que pour le bazar (non-lus, état « avant »).",
+      "**Don't** inventer de preuve sociale (chiffres, avis, logos de presse).",
+      "**Don't** poser de petit texte (moins de 18px) dans un gris plus clair que #6B6B70."
+    ]
+  }
+}

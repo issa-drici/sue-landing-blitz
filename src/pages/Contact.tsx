@@ -29,7 +29,7 @@ const Contact = () => {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Raconte-nous…"
           required
-          className="min-h-[160px] resize-y rounded-[22px] border border-black/[0.08] bg-white px-5 py-4 text-[16px] font-medium placeholder:text-[#8A8A90] focus:outline-none focus:border-[#8CBF3D] focus:ring-4 focus:ring-[#D4FC79]/60"
+          className="min-h-[160px] resize-y rounded-[22px] border border-black/[0.08] bg-white px-5 py-4 text-[16px] font-medium placeholder:text-[#6B6B70] focus:outline-none focus:border-[#8CBF3D] focus:ring-4 focus:ring-[#D4FC79]/60"
         />
         <button
           type="submit"
