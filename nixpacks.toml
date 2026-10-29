@@ -1,0 +1,10 @@
+# Nixpacks sert d'office les projets Vite en statique avec Caddy : on garde le serveur Node
+# (server/index.mjs), qui rend dynamique l'aperçu des liens d'invitation.
+[variables]
+NIXPACKS_SPA_CADDY = "false"
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"
