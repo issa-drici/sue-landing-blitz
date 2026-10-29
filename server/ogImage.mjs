@@ -108,7 +108,12 @@ function sessionTree(session) {
         { width: 1200, height: 630, position: "relative", background: "#1B2A12", fontFamily: "Outfit", color: "#FFFFFF" },
         surface ? img(surface, { position: "absolute", top: 0, left: 0, width: 1200, height: 630, objectFit: "cover" }) : null,
         h("div", { position: "absolute", top: 0, left: 0, width: 1200, height: 630, backgroundImage: "linear-gradient(90deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.7) 55%, rgba(10,10,10,0.15) 100%)" }),
-        sport ? img(sport, { position: "absolute", right: 20, top: 40, width: 380, height: 380 }) : null,
+        sport ? img(sport, { position: "absolute", right: 30, top: 110, width: 350, height: 350 }) : null,
+        // Marque toujours visible, en haut à droite
+        h("div", { position: "absolute", top: 44, right: 56, alignItems: "center" },
+            icon ? img(icon, { width: 50, height: 50, borderRadius: 14 }) : null,
+            h("div", { marginLeft: 12, fontSize: 40, fontWeight: 900, letterSpacing: -1.4 }, "Sue"),
+        ),
 
         h(
             "div",
@@ -116,9 +121,9 @@ function sessionTree(session) {
             // Marque + qui invite
             h("div", { alignItems: "center" },
                 session.organizerPhoto
-                    ? img(session.organizerPhoto, { width: 64, height: 64, borderRadius: 32, objectFit: "cover", border: `3px solid ${VOLT}` })
-                    : icon ? img(icon, { width: 48, height: 48, borderRadius: 13 }) : null,
-                h("div", { marginLeft: 16, fontSize: 42, fontWeight: 800, color: VOLT }, `${session.organizer} t'invite`),
+                    ? img(session.organizerPhoto, { width: 64, height: 64, borderRadius: 32, objectFit: "cover", border: `3px solid ${VOLT}`, marginRight: 16 })
+                    : null,
+                h("div", { fontSize: 42, fontWeight: 800, color: VOLT }, `${session.organizer} t'invite`),
             ),
             // Sport, quand, où
             h("div", { marginTop: 18, fontSize: sportFontSize(session.sportName), fontWeight: 900, letterSpacing: -4, lineHeight: 0.95 }, session.sportName),
