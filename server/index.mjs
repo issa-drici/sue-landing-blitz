@@ -58,7 +58,8 @@ async function inviteImage(token) {
     const cached = imageCache.get(token);
     if (cached && Date.now() - cached.at < IMAGE_TTL_MS) return cached.image;
     const preview = await fetchPreview(token);
-    const image = await renderInviteImage(preview ? describeSession(preview) : null);
+    // Session introuvable (lien périmé) : l'image de partage de Sue
+    const image = preview ? await renderInviteImage(describeSession(preview)) : await readFile(join(DIST, "og-sue.png"));
     imageCache.set(token, { at: Date.now(), image });
     if (imageCache.size > 500) imageCache.delete(imageCache.keys().next().value);
     return image;
@@ -93,9 +94,9 @@ async function joinPage(token) {
     // L'URL de l'image change avec le contenu : WhatsApp regarde à nouveau quand la session se remplit
     const version = session ? encodeURIComponent(session.version) : "0";
     return withMeta(indexHtml, {
-        title: session ? session.title : "Tu es invité à une session sur Sue",
-        description: session ? session.description : "Ouvre le lien pour voir la session et répondre en un tap.",
-        image: `${SITE_URL}/og/join/${encodeURIComponent(token)}.jpg?v=${version}`,
+        title: session ? session.title : "Sue — Organise ton sport entre potes",
+        description: session ? session.description : "Crée ta session en 30 secondes, partage le lien et vois qui vient.",
+        image: session ? `${SITE_URL}/og/join/${encodeURIComponent(token)}.jpg?v=${version}` : `${SITE_URL}/og-sue.png`,
         url: `${SITE_URL}/join/${encodeURIComponent(token)}`,
     });
 }
@@ -126,7 +127,8 @@ const server = createServer(async (req, res) => {
         const image = pathname.match(/^\/og\/join\/([A-Za-z0-9_-]+)\.jpg$/);
         if (image) {
             const jpg = await inviteImage(image[1]);
-            res.writeHead(200, { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=300" });
+            const isJpeg = jpg[0] === 0xff && jpg[1] === 0xd8;
+            res.writeHead(200, { "Content-Type": isJpeg ? "image/jpeg" : "image/png", "Cache-Control": "public, max-age=300" });
             return res.end(jpg);
         }
 

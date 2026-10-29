@@ -30,37 +30,62 @@ function dataUri(relativePath, mime) {
     return dataUriCache.get(relativePath);
 }
 
+/** Photo de profil en data URI (JPEG ou PNG), null si absente, lente ou dans un autre format */
+const photoCache = new Map();
+async function photoDataUri(url) {
+    if (!url || !/^https?:\/\//.test(url)) return null;
+    if (photoCache.has(url)) return photoCache.get(url);
+    let uri = null;
+    try {
+        const response = await fetch(url, { signal: AbortSignal.timeout(2000) });
+        const type = (response.headers.get("content-type") || "").split(";")[0];
+        if (response.ok && (type === "image/jpeg" || type === "image/png")) {
+            uri = `data:${type};base64,${Buffer.from(await response.arrayBuffer()).toString("base64")}`;
+        }
+    } catch {
+        // pas de photo : on garde les initiales
+    }
+    photoCache.set(url, uri);
+    if (photoCache.size > 300) photoCache.delete(photoCache.keys().next().value);
+    return uri;
+}
+
 /** Élément satori : h("div", { ...style }, enfants) */
-const h = (type, style, ...children) => ({
-    type,
-    props: { style: { display: "flex", ...style }, children: children.flat().filter((c) => c !== null && c !== false && c !== undefined) },
-});
+const h = (type, style, ...children) => {
+    const kids = children.flat().filter((c) => c !== null && c !== false && c !== undefined);
+    return { type, props: { style: { display: "flex", ...style }, children: kids.length === 1 ? kids[0] : kids } };
+};
 const img = (src, style) => ({ type: "img", props: { src, style } });
 
-function avatarsRow(players) {
-    const shown = players.slice(0, 5);
+function avatarsRow(players, size = 78) {
+    const shown = players.slice(0, 4);
     const extra = players.length - shown.length;
-    return h(
-        "div",
-        { alignItems: "center" },
-        shown.map((label, i) =>
-            h(
-                "div",
-                {
-                    width: 62, height: 62, borderRadius: 31, background: TINTS[i % TINTS.length], border: "4px solid rgba(255,255,255,0.95)",
-                    marginLeft: i === 0 ? 0 : -14, alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: INK,
-                },
-                label,
-            ),
-        ),
-        extra > 0
-            ? h("div", {
-                width: 62, height: 62, borderRadius: 31, background: "#F2F2F4", border: "4px solid rgba(255,255,255,0.95)", marginLeft: -14,
-                alignItems: "center", justifyContent: "center", fontSize: 21, fontWeight: 700, color: INK,
-            }, `+${extra}`)
-            : null,
+    const bubble = (content, background, i) =>
+        h("div", {
+            width: size, height: size, borderRadius: size / 2, background, border: "5px solid #FFFFFF", overflow: "hidden",
+            marginLeft: i === 0 ? 0 : -18, alignItems: "center", justifyContent: "center",
+            fontSize: size * 0.34, fontWeight: 900, color: INK,
+        }, content);
+    return h("div", { alignItems: "center" },
+        shown.map((player, i) =>
+            bubble(player.photo ? img(player.photo, { width: size, height: size, objectFit: "cover" }) : player.initials, TINTS[i % TINTS.length], i)),
+        extra > 0 ? bubble(`+${extra}`, "#F2F2F4", shown.length) : null,
     );
 }
+
+const pinIcon = (color, size = 34) => ({
+    type: "svg",
+    props: {
+        width: size, height: size, viewBox: "0 0 24 24", fill: "none",
+        children: [
+            { type: "path", props: { d: "M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z", fill: color } },
+            { type: "circle", props: { cx: 12, cy: 10, r: 2.6, fill: "#0A0A0A" } },
+        ],
+    },
+});
+
+/** Taille du nom du sport : aussi gros que possible sans déborder sur l'objet 3D */
+const sportFontSize = (name) => Math.max(76, Math.min(128, Math.floor(700 / (name.length * 0.56))));
 
 function sessionTree(session) {
     const surface = session.surface ? dataUri(`surfaces/${session.surface}.jpg`, "image/jpeg") : null;
@@ -68,70 +93,65 @@ function sessionTree(session) {
     const icon = dataUri("icon.png", "image/png");
 
     const status = session.isFindingSlot
-        ? `${session.slotCount} créneau${session.slotCount > 1 ? "x" : ""} à voter`
+        ? `Vote parmi ${session.slotCount} créneau${session.slotCount > 1 ? "x" : ""}`
         : session.max
             ? session.missing > 0 ? `Il manque ${session.missing} joueur${session.missing > 1 ? "s" : ""}` : "Complet"
             : `${session.accepted} confirmé${session.accepted > 1 ? "s" : ""}`;
-    const cta = session.isFindingSlot ? "Donne tes dispos →" : session.missing === 0 ? "Voir la session →" : "Tu viens ? Réponds →";
+    const cta = session.isFindingSlot ? "Vote →" : session.missing === 0 ? "Voir →" : "Réponds →";
+
+    // Quand : jour et heure, ou "Date à choisir" pour une session à voter
+    const when = h("div", { marginTop: 6, fontSize: 64, fontWeight: 900, letterSpacing: -2 },
+        session.isFindingSlot ? "Date à choisir" : `${session.whenLine}${session.endTime ? ` → ${session.endTime}` : ""}`);
 
     return h(
         "div",
         { width: 1200, height: 630, position: "relative", background: "#1B2A12", fontFamily: "Outfit", color: "#FFFFFF" },
         surface ? img(surface, { position: "absolute", top: 0, left: 0, width: 1200, height: 630, objectFit: "cover" }) : null,
-        h("div", { position: "absolute", top: 0, left: 0, width: 1200, height: 630, backgroundImage: "linear-gradient(90deg, rgba(10,10,10,0.86) 0%, rgba(10,10,10,0.62) 52%, rgba(10,10,10,0.12) 100%)" }),
-        sport ? img(sport, { position: "absolute", right: 46, top: 70, width: 340, height: 340 }) : null,
+        h("div", { position: "absolute", top: 0, left: 0, width: 1200, height: 630, backgroundImage: "linear-gradient(90deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.7) 55%, rgba(10,10,10,0.15) 100%)" }),
+        sport ? img(sport, { position: "absolute", right: 20, top: 40, width: 380, height: 380 }) : null,
 
         h(
             "div",
-            { position: "absolute", top: 0, left: 0, width: 1200, height: 630, padding: "56px 64px", flexDirection: "column" },
-            // Marque
+            { position: "absolute", top: 0, left: 0, width: 1200, height: 630, padding: "44px 56px 48px", flexDirection: "column" },
+            // Marque + qui invite
             h("div", { alignItems: "center" },
-                icon ? img(icon, { width: 52, height: 52, borderRadius: 14 }) : null,
-                h("div", { marginLeft: 14, fontSize: 34, fontWeight: 900, letterSpacing: -1.2 }, "Sue"),
+                session.organizerPhoto
+                    ? img(session.organizerPhoto, { width: 64, height: 64, borderRadius: 32, objectFit: "cover", border: `3px solid ${VOLT}` })
+                    : icon ? img(icon, { width: 48, height: 48, borderRadius: 13 }) : null,
+                h("div", { marginLeft: 16, fontSize: 42, fontWeight: 800, color: VOLT }, `${session.organizer} t'invite`),
             ),
-            // Qui, quoi, quand, où
-            h("div", { marginTop: 38, fontSize: 34, fontWeight: 700, color: VOLT }, `${session.organizer} t'invite`),
-            h("div", { marginTop: 6, fontSize: 96, fontWeight: 900, letterSpacing: -3.5, lineHeight: 1 }, session.sportName),
-            h("div", { marginTop: 10, fontSize: 52, fontWeight: 900, letterSpacing: -1.5 }, session.whenLine),
-            h("div", { marginTop: 12, fontSize: 30, fontWeight: 500, color: "rgba(255,255,255,0.86)", maxWidth: 680 }, session.location),
-            // Joueurs et appel à répondre
-            h("div", { marginTop: "auto", alignItems: "center", width: 1072 },
+            // Sport, quand, où
+            h("div", { marginTop: 18, fontSize: sportFontSize(session.sportName), fontWeight: 900, letterSpacing: -4, lineHeight: 0.95 }, session.sportName),
+            when,
+            h("div", { marginTop: 16, alignItems: "center", width: 780 },
+                pinIcon(VOLT, 44),
+                h("div", { marginLeft: 10, fontSize: 46, fontWeight: 800, color: "#FFFFFF", display: "block", lineClamp: 1, maxWidth: 720 }, session.location),
+            ),
+            // Joueurs, état, appel à répondre
+            h("div", { marginTop: "auto", alignItems: "center", width: 1088 },
                 session.players.length > 0 ? avatarsRow(session.players) : null,
                 session.max && !session.isFindingSlot
-                    ? h("div", { marginLeft: 22, fontSize: 40, fontWeight: 900 }, `${session.accepted}/${session.max}`)
+                    ? h("div", { marginLeft: 20, fontSize: 54, fontWeight: 900 }, `${session.accepted}/${session.max}`)
                     : null,
-                h("div", { marginLeft: 22, background: VOLT, color: INK, borderRadius: 20, padding: "14px 22px", fontSize: 27, fontWeight: 700 }, status),
-                h("div", { marginLeft: "auto", background: "#FFFFFF", color: INK, borderRadius: 20, padding: "14px 24px", fontSize: 27, fontWeight: 900 }, cta),
+                h("div", { marginLeft: 20, background: VOLT, color: INK, borderRadius: 22, padding: "16px 24px", fontSize: 34, fontWeight: 900 }, status),
+                h("div", { marginLeft: "auto", background: "#FFFFFF", color: INK, borderRadius: 22, padding: "16px 28px", fontSize: 36, fontWeight: 900 }, cta),
             ),
-        ),
-    );
-}
-
-/** Lien sans session valide (expiré, annulé) : invitation générique */
-function genericTree() {
-    const surface = dataUri("surfaces/grass.jpg", "image/jpeg");
-    const sport = dataUri("sports/football.png", "image/png");
-    const icon = dataUri("icon.png", "image/png");
-    return h(
-        "div",
-        { width: 1200, height: 630, position: "relative", background: "#1B2A12", fontFamily: "Outfit", color: "#FFFFFF" },
-        surface ? img(surface, { position: "absolute", top: 0, left: 0, width: 1200, height: 630, objectFit: "cover" }) : null,
-        h("div", { position: "absolute", top: 0, left: 0, width: 1200, height: 630, backgroundImage: "linear-gradient(90deg, rgba(10,10,10,0.86) 0%, rgba(10,10,10,0.5) 60%, rgba(10,10,10,0.15) 100%)" }),
-        sport ? img(sport, { position: "absolute", right: 60, top: 120, width: 360, height: 360 }) : null,
-        h("div", { position: "absolute", top: 0, left: 0, width: 1200, height: 630, padding: "56px 64px", flexDirection: "column" },
-            h("div", { alignItems: "center" },
-                icon ? img(icon, { width: 52, height: 52, borderRadius: 14 }) : null,
-                h("div", { marginLeft: 14, fontSize: 34, fontWeight: 900, letterSpacing: -1.2 }, "Sue"),
-            ),
-            h("div", { marginTop: 120, fontSize: 88, fontWeight: 900, letterSpacing: -3, lineHeight: 1, maxWidth: 700 }, "Tu es invité à une session"),
-            h("div", { marginTop: 24, fontSize: 32, fontWeight: 500, color: "rgba(255,255,255,0.86)" }, "Ouvre le lien pour voir qui vient et répondre."),
         ),
     );
 }
 
 /** JPEG : un aperçu de plus de ~300 Ko est souvent ignoré par WhatsApp (le PNG fait plus de 1 Mo) */
 export async function renderInviteImage(session) {
-    const svg = await satori(session ? sessionTree(session) : genericTree(), { width: 1200, height: 630, fonts });
+    const [organizerPhoto, ...photos] = await Promise.all([
+        photoDataUri(session.organizerAvatarUrl),
+        ...session.players.slice(0, 4).map((player) => photoDataUri(player.avatarUrl)),
+    ]);
+    const withPhotos = {
+        ...session,
+        organizerPhoto,
+        players: session.players.map((player, i) => ({ ...player, photo: photos[i] || null })),
+    };
+    const svg = await satori(sessionTree(withPhotos), { width: 1200, height: 630, fonts });
     const rendered = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render();
     return jpeg.encode({ data: rendered.pixels, width: rendered.width, height: rendered.height }, 82).data;
 }

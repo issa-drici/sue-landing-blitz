@@ -19,22 +19,28 @@ const SPORT_SURFACES = {
     bowling: "bowling-lane", "tir-a-l-arc": "archery-target",
 };
 
+const SHORT_DAYS = ["Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."];
 const WEEKDAYS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
 const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
-/** Date du jour à Paris, au format YYYY-MM-DD */
-const todayInParis = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" }).format(new Date());
+/** "1er", "2", "3"… */
+const dayOfMonth = (date) => (date.getUTCDate() === 1 ? "1er" : String(date.getUTCDate()));
 
-const daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
-
-/** "aujourd'hui", "demain", "jeudi" (dans la semaine) ou "jeudi 6 novembre" */
-export function dayLabel(isoDate, today = todayInParis()) {
-    const diff = daysBetween(today, isoDate);
-    if (diff === 0) return "aujourd'hui";
-    if (diff === 1) return "demain";
+/**
+ * "jeudi 6 novembre" : toujours une date absolue. L'aperçu reste figé dans la conversation,
+ * un "demain" serait faux dès le lendemain.
+ */
+export function dayLabel(isoDate) {
     const date = new Date(`${isoDate}T12:00:00Z`);
-    const weekday = WEEKDAYS[date.getUTCDay()];
-    return diff > 1 && diff < 7 ? weekday : `${weekday} ${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]}`;
+    return `${WEEKDAYS[date.getUTCDay()]} ${dayOfMonth(date)} ${MONTHS[date.getUTCMonth()]}`;
+}
+
+const SHORT_MONTHS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+
+/** "Jeu. 6 nov." pour l'image, où la place compte */
+function shortDayLabel(isoDate) {
+    const date = new Date(`${isoDate}T12:00:00Z`);
+    return `${SHORT_DAYS[date.getUTCDay()]} ${dayOfMonth(date)} ${SHORT_MONTHS[date.getUTCMonth()]}`;
 }
 
 /** "19:00" -> "19h", "19:30" -> "19h30" */
@@ -42,6 +48,8 @@ export const hourLabel = (time) => {
     const [h, m] = (time || "").split(":");
     return m === "00" ? `${Number(h)}h` : `${Number(h)}h${m}`;
 };
+
+
 
 const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 const firstName = (fullName) => (fullName || "").trim().split(/\s+/)[0] || "Un pote";
@@ -60,7 +68,7 @@ export function describeSession(preview) {
     const players = (preview.participants || [])
         .filter((p) => p.status === "accepted")
         .sort((a, b) => Number(b.isOrganizer) - Number(a.isOrganizer))
-        .map((p) => initials(p.fullName));
+        .map((p) => ({ initials: initials(p.fullName), avatarUrl: p.avatarUrl || null }));
 
     const when = isFindingSlot
         ? `date à choisir, ${slotCount} créneau${slotCount > 1 ? "x" : ""} proposé${slotCount > 1 ? "s" : ""}`
@@ -86,13 +94,15 @@ export function describeSession(preview) {
         sportName,
         surface: SPORT_SURFACES[sportKey] || null,
         organizer,
-        whenLine: isFindingSlot ? "Date à choisir" : capitalize(`${dayLabel(preview.date)} · ${hourLabel(preview.startTime)}`),
+        organizerAvatarUrl: preview.organizer?.avatarUrl || null,
+        whenLine: isFindingSlot ? "Date à choisir" : `${shortDayLabel(preview.date)} · ${hourLabel(preview.startTime)}`,
         location: preview.location,
         accepted,
         max,
         missing,
         isFindingSlot,
         slotCount,
+        endTime: preview.endTime ? hourLabel(preview.endTime) : null,
         players,
     };
 }
