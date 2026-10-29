@@ -89,7 +89,11 @@ export function describeSession(preview) {
         title,
         description,
         // Change quand ce que montre l'image change : WhatsApp rafraîchit alors l'aperçu
-        version: createHash("sha1").update([preview.date, preview.startTime, accepted, max, slotCount, preview.location].join("|")).digest("hex").slice(0, 10),
+        version: createHash("sha1").update(JSON.stringify([
+            preview.sport, preview.scheduling, preview.date, preview.startTime, preview.endTime, preview.location,
+            accepted, max, slotCount, preview.organizer?.fullName, preview.organizer?.avatarUrl,
+            (preview.participants || []).filter((p) => p.status === "accepted").map((p) => [p.fullName, p.avatarUrl]),
+        ])).digest("hex").slice(0, 10),
         sportKey,
         sportName,
         surface: SPORT_SURFACES[sportKey] || null,

@@ -30,7 +30,8 @@ const indexHtml = readFileSync(join(DIST, "index.html"), "utf8");
 
 // --- Session publique (même endpoint que la page d'invitation), gardée une minute ---
 const previewCache = new Map();
-const PREVIEW_TTL_MS = 60_000;
+// Court : une session modifiée puis repartagée doit montrer tout de suite son nouvel état
+const PREVIEW_TTL_MS = 5_000;
 
 async function fetchPreview(token) {
     const cached = previewCache.get(token);
@@ -54,13 +55,15 @@ async function fetchPreview(token) {
 const imageCache = new Map();
 const IMAGE_TTL_MS = 5 * 60_000;
 
-async function inviteImage(token) {
-    const cached = imageCache.get(token);
+async function inviteImage(token, version) {
+    // Une image par état de la session (le paramètre v change à chaque modification)
+    const key = `${token}:${version || ""}`;
+    const cached = imageCache.get(key);
     if (cached && Date.now() - cached.at < IMAGE_TTL_MS) return cached.image;
     const preview = await fetchPreview(token);
     // Session introuvable (lien périmé) : l'image de partage de Sue
     const image = preview ? await renderInviteImage(describeSession(preview)) : await readFile(join(DIST, "og-sue.png"));
-    imageCache.set(token, { at: Date.now(), image });
+    imageCache.set(key, { at: Date.now(), image });
     if (imageCache.size > 500) imageCache.delete(imageCache.keys().next().value);
     return image;
 }
@@ -122,11 +125,11 @@ async function serveStatic(pathname, res) {
 
 const server = createServer(async (req, res) => {
     try {
-        const { pathname } = new URL(req.url, "http://localhost");
+        const { pathname, searchParams } = new URL(req.url, "http://localhost");
 
         const image = pathname.match(/^\/og\/join\/([A-Za-z0-9_-]+)\.jpg$/);
         if (image) {
-            const jpg = await inviteImage(image[1]);
+            const jpg = await inviteImage(image[1], searchParams.get("v"));
             const isJpeg = jpg[0] === 0xff && jpg[1] === 0xd8;
             res.writeHead(200, { "Content-Type": isJpeg ? "image/jpeg" : "image/png", "Cache-Control": "public, max-age=300" });
             return res.end(jpg);
