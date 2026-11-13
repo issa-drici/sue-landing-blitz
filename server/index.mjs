@@ -44,8 +44,11 @@ async function fetchPreview(token) {
         });
         if (response.ok) data = (await response.json()).data ?? null;
     } catch {
-        // API lente ou indisponible : aperçu générique
+        // API lente ou indisponible : aperçu générique pour cette fois
     }
+    // Un échec n'est pas gardé : la demande suivante (iMessage en refait souvent une) retente l'API
+    // au lieu de resservir l'aperçu générique, par exemple juste après la création d'une session
+    if (data === null) return null;
     previewCache.set(token, { at: Date.now(), data });
     if (previewCache.size > 2000) previewCache.delete(previewCache.keys().next().value);
     return data;
