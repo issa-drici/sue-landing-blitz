@@ -37,9 +37,9 @@ export const IS_IOS = typeof navigator !== "undefined"
 
 export const APP_STORE_URL = "https://apps.apple.com/fr/app/sue/id6749824461";
 
-export async function apiFetch<T = unknown>(path: string, options: { method?: string; body?: unknown; auth?: boolean } = {}): Promise<T> {
+export async function apiFetch<T = unknown>(path: string, options: { method?: string; body?: unknown; auth?: boolean; headers?: Record<string, string> } = {}): Promise<T> {
     const { method = "GET", body, auth = true } = options;
-    const headers: Record<string, string> = { Accept: "application/json", "Content-Type": "application/json" };
+    const headers: Record<string, string> = { Accept: "application/json", "Content-Type": "application/json", ...options.headers };
     const token = getStoredToken();
     if (auth && token) headers.Authorization = `Bearer ${token}`;
 

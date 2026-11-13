@@ -15,6 +15,7 @@ import Join from "./pages/Join";
 import WebLogin from "./web/pages/WebLogin";
 import WebSessions from "./web/pages/WebSessions";
 import WebSessionPage from "./web/pages/WebSessionPage";
+import WebChatPage from "./web/pages/WebChatPage";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/app" element={<WebSessions />} />
           <Route path="/app/connexion" element={<WebLogin />} />
           <Route path="/app/session/:id" element={<WebSessionPage />} />
+          <Route path="/app/session/:id/chat" element={<WebChatPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

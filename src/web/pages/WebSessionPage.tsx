@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Check, Copy, Loader2, MapPin, Euro, Plus, X } from "lucide-react";
+import { ArrowLeft, Calendar, Check, Copy, Loader2, MapPin, Euro, MessageCircle, Plus, X } from "lucide-react";
 import { apiFetch } from "@/web/api";
+import { chatApi } from "@/web/chat/api";
 import { SportBackdrop } from "@/web/components/SportBackdrop";
 import { WebLayout } from "@/web/components/WebLayout";
 import { ProposeSlotForm, ProposedSlotInput } from "@/web/components/ProposeSlotForm";
@@ -315,6 +316,26 @@ function Players({ session }: { session: WebSession }) {
     );
 }
 
+/** Accès au chat de la session (organisateur et invités), avec le nombre de messages non lus */
+function ChatButton({ sessionId }: { sessionId: string }) {
+    const { data } = useQuery({
+        queryKey: ["web-chat-meta", sessionId],
+        queryFn: () => chatApi.getMeta(sessionId),
+        refetchOnWindowFocus: true,
+    });
+    const unread = data?.unreadCount ?? 0;
+    return (
+        <Link to={`/app/session/${sessionId}/chat`} className="relative flex items-center gap-2 h-10 px-4 rounded-full bg-white border border-[#EFEFEF] font-bold text-sm">
+            <MessageCircle className="w-4 h-4" /> Discussion
+            {unread > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1.5 rounded-full bg-[#D4FC79] text-black text-[11px] font-black flex items-center justify-center border-2 border-[#FAFAFA]">
+                    {unread > 9 ? "9+" : unread}
+                </span>
+            )}
+        </Link>
+    );
+}
+
 function SessionContent({ user }: { user: WebUser }) {
     const { id = "" } = useParams();
     const { data, isLoading, error } = useQuery({
@@ -333,9 +354,12 @@ function SessionContent({ user }: { user: WebUser }) {
 
     return (
         <div className="flex flex-col gap-4">
-            <Link to="/app" className="flex items-center gap-1 text-sm font-semibold text-slate-500 w-fit">
-                <ArrowLeft className="w-4 h-4" /> Mes sessions
-            </Link>
+            <div className="flex items-center justify-between">
+                <Link to="/app" className="flex items-center gap-1 text-sm font-semibold text-slate-500 w-fit">
+                    <ArrowLeft className="w-4 h-4" /> Mes sessions
+                </Link>
+                {(isOrganizer || me) && <ChatButton sessionId={session.id} />}
+            </div>
 
             <SportBackdrop sport={session.sport} size="large">
                 <div className="p-5 pr-24 min-h-[170px] flex flex-col justify-end gap-1.5">

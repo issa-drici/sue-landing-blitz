@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loader2, LogOut } from "lucide-react";
 import { APP_STORE_URL, IS_IOS, UnauthorizedError, apiFetch, clearToken, getStoredToken } from "@/web/api";
 import { WebUser } from "@/web/types";
+import { InstallBanner } from "@/web/components/InstallBanner";
 
 // Cadre commun de l'espace web : réservé à Android et ordinateur (sur iPhone on renvoie vers l'app),
 // connexion obligatoire (sinon page de connexion, puis retour à la page demandée).
@@ -50,6 +51,13 @@ export function WebLayout({ children }: WebLayoutProps) {
         navigate("/app/connexion", { replace: true });
     };
 
+    // Écran du chat : plein écran, avec son propre en-tête (retour à la session)
+    if (location.pathname.endsWith("/chat")) {
+        return user ? <>{children(user)}</> : (
+            <div className="min-h-screen bg-[#FAFAFA] flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-slate-400" /></div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-[#FAFAFA] text-slate-900">
             <header className="sticky top-0 z-20 bg-[#FAFAFA]/90 backdrop-blur border-b border-[#EFEFEF]">
@@ -68,11 +76,12 @@ export function WebLayout({ children }: WebLayoutProps) {
                     )}
                 </div>
             </header>
-            <main className="max-w-2xl mx-auto px-4 py-6">
+            <main className="max-w-2xl mx-auto px-4 pt-6 pb-32">
                 {user ? children(user) : (
                     <div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-slate-400" /></div>
                 )}
             </main>
+            <InstallBanner />
         </div>
     );
 }
