@@ -6,7 +6,7 @@ const fileName = (sport: string) =>
 
 const SPORTS_WITH_ICON = new Set([
     "aikido", "aquafitness", "athletisme", "aviron", "badminton", "baseball", "basketball", "bodyboard",
-    "bowling", "boxe", "course", "cyclisme", "danse", "equitation", "escalade", "football", "golf",
+    "bowling", "boxe", "course", "cyclisme", "danse", "equitation", "escalade", "esport", "football", "golf",
     "gymnastique", "handball", "hockey", "jiu-jitsu-bresilien", "judo", "karate", "kayak", "marche-nordique",
     "marche-sportive", "musculation", "natation", "padel", "peche", "petanque", "pilates", "ping-pong",
     "planche-a-voile", "randonnee", "rugby", "sauvetage-sportif", "skateboard", "ski", "snowboard", "squash",
@@ -43,6 +43,7 @@ const SPORT_SURFACES: Record<string, string> = {
     equitation: "arena-sand",
     bowling: "bowling-lane",
     "tir-a-l-arc": "archery-target",
+    esport: "gaming-desk",
 };
 
 export const getSportSurfaceUrl = (sport?: string | null): string | null => {

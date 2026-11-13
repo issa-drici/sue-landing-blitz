@@ -17,6 +17,7 @@ const SPORT_SURFACES = {
     "stand-up-paddle": "lake", surf: "waves", bodyboard: "waves", "planche-a-voile": "waves", ski: "snow", snowboard: "snow",
     hockey: "ice", baseball: "baseball-dirt", petanque: "gravel", escalade: "climbing-wall", equitation: "arena-sand",
     bowling: "bowling-lane", "tir-a-l-arc": "archery-target",
+    esport: "gaming-desk",
 };
 
 const SHORT_DAYS = ["Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."];
